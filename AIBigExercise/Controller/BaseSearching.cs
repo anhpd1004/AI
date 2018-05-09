@@ -12,12 +12,21 @@ namespace AIBigExercise.Controller
     class BaseSearching
     {
         //mảng điểm số
-        public long[] AttackGrades = new long[7] { 0, 3, 24, 192, 1536, 12288, 98304 };
-        public long[] DefenseGrades = new long[7] { 0, 1, 9, 81, 729, 6561, 59049 };
-        public string[] XCase = { @"\sxx\s", @"\sxxxo", @"oxxx\s", @"\sxxx\s", @"\sxxxxo", @"oxxxx\s", @"\sxxxx\s", @"xxxxx" };
-        public string[] OCase = { @"\soo\s", @"\sooox", @"xooo\s", @"\sooo\s", @"\soooox", @"xoooo\s", @"\soooo\s", @"ooooo" };
-        public long[] point = { 10, 5, 5, 20, 40, 40, 3000, 10000 };
-        public const int DEPTH = 1;
+        //public long[] AttackGrades = new long[7] { 0, 3, 24, 192, 1536, 12288, 98304 };
+        //public long[] DefenseGrades = new long[7] { 0, 1, 9, 81, 729, 6561, 59049 };
+        public string[] XCase = { @"o(\w){1,5}o",@"\sxx\s", @"oxx\sx", @"x\sxxo", @"ox\sxx\s", @"\sxx\sxo", @"\sxxxo", @"oxxx\s",@"\sxxx\s",
+                                    @"xx\sx",@"x\sxx", 
+                                    @"\sxxxxo", @"oxxxx\s", @"\sxxxx\s", 
+                                    @"xxxxx" };
+        public string[] OCase = {@"x(\w){1,5}x", @"\soo\s", @"xoo\so", @"o\soox",@"xo\soo\s", @"\soo\sox", @"\sooox", @"xooo\s", @"\sooo\s",
+                                    @"oo\so", @"o\soo", 
+                                    @"\soooox", @"xoooo\s", @"\soooo\s",
+                                    @"ooooo" };
+        public long[] point = { -10, 10, 4, 4, 15, 15, 5, 5, 100,
+                                  40, 40,
+                                  100, 100, 300,
+                                  1000 };
+        public const int DEPTH = 2;
         public const int n = 20;
         public Position TL, TR, BL, BR;
         //public Cell[,] GameBoard;

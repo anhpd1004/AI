@@ -83,7 +83,7 @@ namespace AIBigExercise
             }
             else if (CaroGame.Mode == CaroGame.PLAYER_VS_COM)
             {
-                CaroGame.ComMoveByMinimax(g);
+                CaroGame.ComMoveByAlBe(g);
                 if (CaroGame.TerminalCheck())
                 {
                     CaroGame.TerminalGame();

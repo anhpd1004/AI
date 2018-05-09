@@ -208,7 +208,7 @@ namespace AIBigExercise.Controller
             _StackUndo = new Stack<Cell>();
             InitialCellArray();
             _GameBoard.PaintBoard(g);
-            ComMoveByMinimax(g);
+            ComMoveByAlBe(g);
         }
         #region Undo Redo
         public void Undo(Graphics g)
@@ -238,34 +238,10 @@ namespace AIBigExercise.Controller
         //kết thúc trò chơi
         public void TerminalGame()
         {
-            switch (_Result)
-            {
-                case Board.PLAYER1_WIN:
-                    {
-                        MessageBox.Show("Player 1 win");
-                        break;
-                    }
-                case Board.PLAYER2_WIN:
-                    {
-                        MessageBox.Show("Player 2 win");
-                        break;
-                    }
-                case Board.COM_WIN:
-                    {
-                        MessageBox.Show("Computer win");
-                        break;
-                    }
-                case Board.DRAW:
-                    {
-                        MessageBox.Show("Draw game.");
-                        break;
-                    }
-                default:
-                    {
-                        MessageBox.Show("Error.");
-                        break;
-                    }
-            }
+            String winner = (_Result == Board.DRAW) ? "Draw game" 
+                : (_Result == Board.PLAYER1_WIN ? "Player 1 win" 
+                :(_Result == Board.PLAYER2_WIN ? "Player 2 win" : "Computer win"));
+            MessageBox.Show(winner);
         }
         //kiểm tra trạng thái kết thúc trò chơi
         public bool TerminalCheck()
@@ -390,7 +366,7 @@ namespace AIBigExercise.Controller
                 minimax.MiniMax(_CellArray, BaseSearching.DEPTH, true, TL, TR, BL, BR, ref p);
                 long end = CurrentTimeMillis();
                 long time = end - start;
-                System.IO.File.WriteAllText("Runtimes\Minimax.txt", time + "\n");
+                //System.IO.File.WriteAllText(@".\Runtimes\Minimax.txt", time + "\n");
                 Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
             }
         }
@@ -407,7 +383,7 @@ namespace AIBigExercise.Controller
                 albe.AlBe(_CellArray, BaseSearching.DEPTH, true, TL, TR, BL, BR, ref p);
                 long end = CurrentTimeMillis();
                 long time = end - start;
-                System.IO.File.WriteAllText(@"Runtimes\AlphaBeta.txt", time + "\n");
+                //System.IO.File.WriteAllText(@"Runtimes\AlphaBeta.txt", time + "\n");
                 Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
             }
         }

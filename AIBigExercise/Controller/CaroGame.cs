@@ -16,6 +16,8 @@ namespace AIBigExercise.Controller
         public const byte PLAYER_VS_PLAYER = 1;
         public const byte PLAYER_VS_COM = 2;
 
+        private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
         private int _Move = Board.UNDEFINED_MOVE;
         private Board _GameBoard;
         //phạm vi những nước đã đánh
@@ -134,6 +136,12 @@ namespace AIBigExercise.Controller
                 BR.Col = col;
         }
 
+        //convert time from 1970 to now to MillisSeconds
+        public static long CurrentTimeMillis()
+        {
+            return (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
+        }
+        //danh nuoc co'
         public bool Move(int x, int y, int CellState, Graphics g)
         {
             int state = _GameBoard.PaintXorY(x, y, _Move, CellState, g);
@@ -162,6 +170,8 @@ namespace AIBigExercise.Controller
             _CellArray[row, col].Location = new Point(x, y);
             _StackMoved.Push(_CellArray[row, col]);
             _StackUndo = new Stack<Cell>();
+            //if (_StackMoved.Count == 9 && _Mode == CaroGame.PLAYER_VS_PLAYER)
+            //    _Mode = CaroGame.PLAYER_VS_COM;
             return true;
         }
         public void RePaintBoard(Graphics g)
@@ -198,7 +208,7 @@ namespace AIBigExercise.Controller
             _StackUndo = new Stack<Cell>();
             InitialCellArray();
             _GameBoard.PaintBoard(g);
-            InitialComByMinimax(g);
+            ComMoveByMinimax(g);
         }
         #region Undo Redo
         public void Undo(Graphics g)
@@ -367,7 +377,7 @@ namespace AIBigExercise.Controller
         #endregion
         #region Minimax and AnphaBeta
 
-        public void InitialComByMinimax(Graphics g)
+        public void ComMoveByMinimax(Graphics g)
         {
             if (_StackMoved.Count == 0)
             {
@@ -375,12 +385,32 @@ namespace AIBigExercise.Controller
             }
             else
             {
+                long start = CurrentTimeMillis();
                 Position p = new Position();
-                albe.AlBe(_CellArray, BaseSearching.DEPTH, true, TL, TR, BL, BR, ref p);
+                minimax.MiniMax(_CellArray, BaseSearching.DEPTH, true, TL, TR, BL, BR, ref p);
+                long end = CurrentTimeMillis();
+                long time = end - start;
+                System.IO.File.WriteAllText("Runtimes\Minimax.txt", time + "\n");
                 Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
             }
         }
-
+        public void ComMoveByAlBe(Graphics g)
+        {
+            if (_StackMoved.Count == 0)
+            {
+                Move((SIZE - 1) / 2 * Cell.SIZE + 1, (SIZE - 1) / 2 * Cell.SIZE + 1, Cell.EMPTY, g);
+            }
+            else
+            {
+                long start = CurrentTimeMillis();
+                Position p = new Position();
+                albe.AlBe(_CellArray, BaseSearching.DEPTH, true, TL, TR, BL, BR, ref p);
+                long end = CurrentTimeMillis();
+                long time = end - start;
+                System.IO.File.WriteAllText(@"Runtimes\AlphaBeta.txt", time + "\n");
+                Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
+            }
+        }
         #endregion
     }
 }

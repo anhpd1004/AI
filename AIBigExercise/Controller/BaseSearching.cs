@@ -17,7 +17,7 @@ namespace AIBigExercise.Controller
         public string[] XCase = { @"\sxx\s", @"\sxxxo", @"oxxx\s", @"\sxxx\s", @"\sxxxxo", @"oxxxx\s", @"\sxxxx\s", @"xxxxx" };
         public string[] OCase = { @"\soo\s", @"\sooox", @"xooo\s", @"\sooo\s", @"\soooox", @"xoooo\s", @"\soooo\s", @"ooooo" };
         public long[] point = { 10, 5, 5, 20, 40, 40, 3000, 10000 };
-        public const int DEPTH = 3;
+        public const int DEPTH = 1;
         public const int n = 20;
         public Position TL, TR, BL, BR;
         //public Cell[,] GameBoard;

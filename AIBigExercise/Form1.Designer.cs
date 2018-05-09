@@ -112,27 +112,27 @@
             this.playerVsPlayerToolStripMenuItem,
             this.playerVsComToolStripMenuItem});
             this.newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
-            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.newGameToolStripMenuItem.Text = "&New game    Ctrl + N";
+            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.newGameToolStripMenuItem.Text = "&New game";
             // 
             // playerVsPlayerToolStripMenuItem
             // 
             this.playerVsPlayerToolStripMenuItem.Name = "playerVsPlayerToolStripMenuItem";
-            this.playerVsPlayerToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.playerVsPlayerToolStripMenuItem.Text = "&Player vs Player";
+            this.playerVsPlayerToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.playerVsPlayerToolStripMenuItem.Text = "&Player vs Player        Ctrl + N + P";
             this.playerVsPlayerToolStripMenuItem.Click += new System.EventHandler(this.PvsP);
             // 
             // playerVsComToolStripMenuItem
             // 
             this.playerVsComToolStripMenuItem.Name = "playerVsComToolStripMenuItem";
-            this.playerVsComToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.playerVsComToolStripMenuItem.Text = "&Player vs Com";
-            this.playerVsComToolStripMenuItem.Click += new System.EventHandler(this.playerVsComToolStripMenuItem_Click);
+            this.playerVsComToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.playerVsComToolStripMenuItem.Text = "&Player vs Com          Ctrl + N + C";
+            this.playerVsComToolStripMenuItem.Click += new System.EventHandler(this.PvsC);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.exitToolStripMenuItem.Text = "&Exit                Ctrl + Q";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -344,6 +344,7 @@
             this.btnNewGame.TabIndex = 4;
             this.btnNewGame.Text = "New";
             this.btnNewGame.UseVisualStyleBackColor = false;
+            this.btnNewGame.Click += new System.EventHandler(this.btnNewGame_Click);
             // 
             // btnPlayerVsComputer
             // 

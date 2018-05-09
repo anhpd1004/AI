@@ -23,6 +23,9 @@ namespace AIBigExercise
             CaroGame = new CaroGame();
             g = panelBoard.CreateGraphics();
             groupBox1.MouseLeave += groupBox1_MouseLeave;
+            btnPlayerVsPlayer.MouseClick += PvsP;
+            btnPlayerVsComputer.MouseClick += PvsC;
+            btnThoatGame.MouseClick += exitToolStripMenuItem_Click;
         }
 
         void groupBox1_MouseLeave(object sender, EventArgs e)
@@ -38,6 +41,9 @@ namespace AIBigExercise
             timerChuChay.Enabled = true;
             picUndo.Enabled = false;
             picRedo.Enabled = false;
+            btnNewGame.Enabled = true;
+            btnPlayerVsComputer.Enabled = false;
+            btnPlayerVsPlayer.Enabled = false;
         }
 
         private void timerChuChay_Tick(object sender, EventArgs e)
@@ -77,7 +83,7 @@ namespace AIBigExercise
             }
             else if (CaroGame.Mode == CaroGame.PLAYER_VS_COM)
             {
-                CaroGame.InitialComByMinimax(g);
+                CaroGame.ComMoveByMinimax(g);
                 if (CaroGame.TerminalCheck())
                 {
                     CaroGame.TerminalGame();
@@ -93,13 +99,20 @@ namespace AIBigExercise
 
         private void PvsP(object sender, EventArgs e)
         {
-            DialogResult selection = MessageBox.Show("Do you want to play new game?", "New game", MessageBoxButtons.YesNo);
-            if (selection == DialogResult.No)
-                return;
+            if (CaroGame.StackMoved.Count > 0)
+            {
+
+                DialogResult selection = MessageBox.Show("Do you want to play new game?", "New game", MessageBoxButtons.YesNo);
+                if (selection == DialogResult.No)
+                    return;
+            }
             g.Clear(panelBoard.BackColor);
             CaroGame.StartPlayerVsPlayer(g);
             picUndo.Enabled = false;
             picRedo.Enabled = false;
+            btnPlayerVsComputer.Enabled = false;
+            btnPlayerVsPlayer.Enabled = false;
+            btnNewGame.Enabled = true;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -145,14 +158,32 @@ namespace AIBigExercise
                     picRedo.Enabled = false;
                 picUndo.Enabled = true;
             }
-            else if (keyData == (Keys.Control | Keys.N))
+            else if (keyData == (Keys.Control | Keys.N | Keys.P))
             {
-                DialogResult selection = MessageBox.Show("Do you want to play new game?", "New game", MessageBoxButtons.YesNo);
-                if (selection == DialogResult.No)
-                    return false;
+                if (CaroGame.StackMoved.Count > 0)
+                {
+
+                    DialogResult selection = MessageBox.Show("Do you want to play new game?", "New game", MessageBoxButtons.YesNo);
+                    if (selection == DialogResult.No)
+                        return false;
+                }
                 g.Clear(panelBoard.BackColor);
                 CaroGame.StartPlayerVsPlayer(g);
                 picUndo.Enabled = false;
+                picRedo.Enabled = false;
+            }
+            else if (keyData == (Keys.Control | Keys.N | Keys.C))
+            {
+                if (CaroGame.StackMoved.Count > 0)
+                {
+
+                    DialogResult selection = MessageBox.Show("Do you want to play new game?", "New game", MessageBoxButtons.YesNo);
+                    if (selection == DialogResult.No)
+                        return false;
+                }
+                g.Clear(panelBoard.BackColor);
+                CaroGame.StartPlayerVsCom(g);
+                picUndo.Enabled = true;
                 picRedo.Enabled = false;
             }
             else if (keyData == (Keys.Control | Keys.Q))
@@ -162,15 +193,29 @@ namespace AIBigExercise
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void playerVsComToolStripMenuItem_Click(object sender, EventArgs e)
+        private void PvsC(object sender, EventArgs e)
         {
-            DialogResult selection = MessageBox.Show("Do you want to play new game?", "New game", MessageBoxButtons.YesNo);
-            if (selection == DialogResult.No)
-                return;
+            if (CaroGame.StackMoved.Count > 0)
+            {
+
+                DialogResult selection = MessageBox.Show("Do you want to play new game?", "New game", MessageBoxButtons.YesNo);
+                if (selection == DialogResult.No)
+                    return;
+            }
             g.Clear(panelBoard.BackColor);
             CaroGame.StartPlayerVsCom(g);
             picUndo.Enabled = true;
             picRedo.Enabled = false;
+            btnPlayerVsComputer.Enabled = false;
+            btnPlayerVsPlayer.Enabled = false;
+            btnNewGame.Enabled = true;
+        }
+
+        private void btnNewGame_Click(object sender, EventArgs e)
+        {
+            btnPlayerVsComputer.Enabled = true;
+            btnPlayerVsPlayer.Enabled = true;
+            btnNewGame.Enabled = false;
         }
     }
 }

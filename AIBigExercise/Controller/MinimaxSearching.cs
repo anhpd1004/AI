@@ -83,7 +83,7 @@ namespace AIBigExercise.Controller
                     if (GameBoard[i, j].Status == Cell.EMPTY)
                     {
                         GameBoard[i, j].Status = Cell.PLAYER2;
-                        long val = MiniMax(GameBoard, DEPTH, true, TL, TR, BL, BR);
+                        long val = MiniMax(GameBoard, DEPTH, false, TL, TR, BL, BR);
                         GameBoard[i, j].Status = Cell.EMPTY;
                         if (val > BestVal)
                         {

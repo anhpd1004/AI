@@ -10,3 +10,9 @@ E:\SOURCE_CODE\DotNet\TrenLop\AIBigExercise\AIBigExercise\obj\Debug\AIBigExercis
 E:\SOURCE_CODE\DotNet\TrenLop\AI\AIBigExercise\bin\Debug\AIBigExercise.exe.config
 E:\SOURCE_CODE\DotNet\TrenLop\AI\AIBigExercise\obj\Debug\AIBigExercise.exe
 E:\SOURCE_CODE\DotNet\TrenLop\AI\AIBigExercise\obj\Debug\AIBigExercise.pdb
+E:\SOURCE_CODE\DotNet\TrenLop\AI\AIBigExercise\bin\Debug\AIBigExercise.exe
+E:\SOURCE_CODE\DotNet\TrenLop\AI\AIBigExercise\bin\Debug\AIBigExercise.pdb
+E:\SOURCE_CODE\DotNet\TrenLop\AI\AIBigExercise\obj\Debug\AIBigExercise.csprojResolveAssemblyReference.cache
+E:\SOURCE_CODE\DotNet\TrenLop\AI\AIBigExercise\obj\Debug\AIBigExercise.Form1.resources
+E:\SOURCE_CODE\DotNet\TrenLop\AI\AIBigExercise\obj\Debug\AIBigExercise.Properties.Resources.resources
+E:\SOURCE_CODE\DotNet\TrenLop\AI\AIBigExercise\obj\Debug\AIBigExercise.csproj.GenerateResource.Cache

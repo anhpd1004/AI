@@ -300,8 +300,8 @@ namespace AIBigExercise.Controller
             if (row == 0 || row == SIZE - 5)
                 return true;
             if (_CellArray[row - 1, col].Status == Cell.EMPTY || _CellArray[row + 5, col].Status == Cell.EMPTY)
-                return false;
-            return true;
+                return true;
+            return false;
         }
         //Hàng ngang
         private bool CheckFiveInRow(int row, int col, int CellState)
@@ -317,8 +317,8 @@ namespace AIBigExercise.Controller
             if (col == 0 || col == SIZE - 5)
                 return true;
             if (_CellArray[row, col - 1].Status == Cell.EMPTY || _CellArray[row, col + 5].Status == Cell.EMPTY)
-                return false;
-            return true;
+                return true;
+            return false;
         }
         //Đường chéo trái sang phải
         private bool CheckFiveInDiagonalLeftToRight(int row, int col, int CellState)
@@ -338,8 +338,8 @@ namespace AIBigExercise.Controller
             if (col == 0 || col == SIZE - 5)
                 return true;
             if (_CellArray[row - 1, col - 1].Status == Cell.EMPTY || _CellArray[row + 5, col + 5].Status == Cell.EMPTY)
-                return false;
-            return true;
+                return true;
+            return false;
         }
         //Đường chéo phải sang trái
         private bool CheckFiveInDiagonalRightToLeft(int row, int col, int CellState)
@@ -359,8 +359,8 @@ namespace AIBigExercise.Controller
             if (col == 4 || col == SIZE - 1)
                 return true;
             if (_CellArray[row - 1, col + 1].Status == Cell.EMPTY || _CellArray[row + 5, col - 5].Status == Cell.EMPTY)
-                return false;
-            return true;
+                return true;
+            return false;
         }
         #endregion
         #region Minimax and AnphaBeta

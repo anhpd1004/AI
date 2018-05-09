@@ -73,6 +73,7 @@ namespace AIBigExercise
             if (CaroGame.TerminalCheck())
             {
                 CaroGame.TerminalGame();
+                CaroGame.IsReady = false;
             }
             if (CaroGame.Mode == CaroGame.PLAYER_VS_COM)
             {
@@ -80,6 +81,7 @@ namespace AIBigExercise
                 if (CaroGame.TerminalCheck())
                 {
                     CaroGame.TerminalGame();
+                    CaroGame.IsReady = false;
                 }
             }
         }

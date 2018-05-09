@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller\AnphaBetaSearching.cs" />
+    <Compile Include="Controller\AlphaBetaSearching.cs" />
     <Compile Include="Controller\BaseSearching.cs" />
     <Compile Include="Controller\CaroGame.cs" />
     <Compile Include="Controller\MinimaxSearching.cs" />

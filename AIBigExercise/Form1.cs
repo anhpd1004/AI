@@ -75,9 +75,9 @@ namespace AIBigExercise
                 CaroGame.TerminalGame();
                 CaroGame.IsReady = false;
             }
-            if (CaroGame.Mode == CaroGame.PLAYER_VS_COM)
+            else if (CaroGame.Mode == CaroGame.PLAYER_VS_COM)
             {
-                CaroGame.InitialCom(g);
+                CaroGame.InitialComByMinimax(g);
                 if (CaroGame.TerminalCheck())
                 {
                     CaroGame.TerminalGame();

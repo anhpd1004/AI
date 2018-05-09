@@ -30,6 +30,7 @@ namespace AIBigExercise.Controller
         private int _Result;//kết quả của trận đấu
         private byte _Mode;//chế độ chơi
         private MinimaxSearching minimax;
+        private AlphaBetaSearching albe;
         
 
         #region Construstor
@@ -44,6 +45,7 @@ namespace AIBigExercise.Controller
             _StackMoved = new Stack<Cell>();
             _StackUndo = new Stack<Cell>();
             minimax = new MinimaxSearching();
+            albe = new AlphaBetaSearching();
             InitialCellArray();
         }
         //khởi tạo mảng các ô cờ trên bàn cờ
@@ -196,7 +198,7 @@ namespace AIBigExercise.Controller
             _StackUndo = new Stack<Cell>();
             InitialCellArray();
             _GameBoard.PaintBoard(g);
-            InitialCom(g);
+            InitialComByMinimax(g);
         }
         #region Undo Redo
         public void Undo(Graphics g)
@@ -365,7 +367,7 @@ namespace AIBigExercise.Controller
         #endregion
         #region Minimax and AnphaBeta
 
-        public void InitialCom(Graphics g)
+        public void InitialComByMinimax(Graphics g)
         {
             if (_StackMoved.Count == 0)
             {
@@ -373,8 +375,9 @@ namespace AIBigExercise.Controller
             }
             else
             {
-                Cell cell = minimax.FindBestMove(_CellArray, TL, TR, BL, BR);
-                Move(cell.Location.X, cell.Location.Y, Cell.EMPTY, g);
+                Position p = new Position();
+                albe.AlBe(_CellArray, BaseSearching.DEPTH, true, TL, TR, BL, BR, ref p);
+                Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
             }
         }
 

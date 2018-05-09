@@ -26,7 +26,7 @@ namespace AIBigExercise.Controller
                                   40, 40,
                                   100, 100, 300,
                                   1000 };
-        public const int DEPTH = 2;
+        public const int DEPTH = 5;
         public const int n = 20;
         public Position TL, TR, BL, BR;
         //public Cell[,] GameBoard;

@@ -68,6 +68,11 @@ namespace AIBigExercise.Controller
             if (BR.Col + 2 <= n - 1)
                 BR.Col += 2;
         }
+        //sinh cac nuoc di co hieu qua
+        public List<Position> GenMoves(Cell[,] GameBoard)
+        {
+            return new List<Position>();
+        }
         public virtual long AttackGradeInRow(int CurrRow, int CurrCol)
         {
             long TongDiem = 0;

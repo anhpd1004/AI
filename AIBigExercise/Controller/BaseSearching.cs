@@ -96,15 +96,28 @@ namespace AIBigExercise.Controller
             List<Position> movingList = new List<Position>();
             //sap xep giam dan theo value
             //movings.OrderByDescendin();
-            long l = Evaluate(GameBoard, Cell.PLAYER2);
-            int cst = (l >= 0) ? Cell.PLAYER2 : Cell.PLAYER1;
+            //long l = Evaluate(GameBoard, Cell.PLAYER2);
+            //int cst = (l >= 0) ? Cell.PLAYER2 : Cell.PLAYER1;
             for (int i = TL.Row; i <= BL.Row; i++)
             {
                 for (int j = TL.Col; j <= TR.Col; j++)
                 {
                     if (GameBoard[i, j].Status == Cell.EMPTY)
                     {
-                        GameBoard[i, j].Status = cst;
+                        GameBoard[i, j].Status = Cell.PLAYER2;
+                        long value = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
+                        GameBoard[i, j].Status = Cell.EMPTY;
+                        movings.Add(new Position(i, j), value);
+                    }
+                }
+            }
+            for (int i = TL.Row; i <= BL.Row; i++)
+            {
+                for (int j = TL.Col; j <= TR.Col; j++)
+                {
+                    if (GameBoard[i, j].Status == Cell.EMPTY)
+                    {
+                        GameBoard[i, j].Status = Cell.PLAYER1;
                         long value = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
                         GameBoard[i, j].Status = Cell.EMPTY;
                         movings.Add(new Position(i, j), value);

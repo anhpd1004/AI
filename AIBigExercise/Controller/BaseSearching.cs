@@ -27,8 +27,8 @@ namespace AIBigExercise.Controller
         //                          40, 40,
         //                          1000, 1000, 3000,
         //                          10000, 10000};
-        public String[] XCase = { @"\sxx\s", @"oxxx\s", @"\sxxxo", @"\sxxx\s", @"[^o]\sxxxxo", @"oxxxx\s[^o]", @"\sxxxx\s[^o]", @"[^o]\sxxxx\s", @"oxxxxx\s", @"\sxxxxxo" };
-        public String[] OCase = { @"\soo\s", @"xooo\s", @"\sooox", @"\sooo\s", @"[^x]\soooox", @"xoooo\s[^x]", @"\soooo\s[^x]", @"[^x]\soooo\s", @"0oooox\s", @"\sooooox" };
+        public String[] XCase = { @"\sxx\s", @"oxxx\s", @"\sxxxo", @"\sxxx\s", @"[^o]\sxxxxo", @"oxxxx\s[^o]", @"\sxxxx\s[^o]", @"[^o]\sxxxx\s", @"\wxxxxx\s", @"\sxxxxx\w" };
+        public String[] OCase = { @"\soo\s", @"xooo\s", @"\sooox", @"\sooo\s", @"[^x]\soooox", @"xoooo\s[^x]", @"\soooo\s[^x]", @"[^x]\soooo\s", @"\wooooo\s", @"\sooooo\w" };
         public long[] point = { 10, 40, 40, 100, 1000, 1000, 10000, 10000, 10000, 10000 };
         public const int DEPTH = 3;
         public const int n = 20;

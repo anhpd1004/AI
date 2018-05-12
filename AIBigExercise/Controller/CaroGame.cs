@@ -19,7 +19,7 @@ namespace AIBigExercise.Controller
 
         private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        private int _Move = Board.UNDEFINED_MOVE;
+        private int _Move;
         private Board _GameBoard;
         //phạm vi những nước đã đánh
         public Position TL;//TopLeft
@@ -33,8 +33,9 @@ namespace AIBigExercise.Controller
         private int _Result;//kết quả của trận đấu
         private byte _Mode;//chế độ chơi
         private MinimaxSearching minimax;
-        private AlphaBetaSearching albe;
+        //private AlphaBetaSearching albe;
         private StreamWriter swmini;
+        private bool[,] _VisitedCell;
         //StreamWriter swalbe = File.CreateText(@"AlphaBeta.txt");
         
 
@@ -46,7 +47,8 @@ namespace AIBigExercise.Controller
             _StackMoved = new Stack<Cell>();
             _StackUndo = new Stack<Cell>();
             minimax = new MinimaxSearching();
-            albe = new AlphaBetaSearching();
+            //albe = new AlphaBetaSearching();
+            _VisitedCell = new bool[SIZE, SIZE];
             InitialCellArray();
         }
         //khởi tạo mảng các ô cờ trên bàn cờ
@@ -173,6 +175,7 @@ namespace AIBigExercise.Controller
             _CellArray[row, col].Pos = new Position(row, col);
             _CellArray[row, col].Location = new Point(x, y);
             _StackMoved.Push(_CellArray[row, col]);
+            _VisitedCell[row, col] = true;
             _StackUndo = new Stack<Cell>();
             //if (_StackMoved.Count == 9 && _Mode == CaroGame.PLAYER_VS_PLAYER)
             //    _Mode = CaroGame.PLAYER_VS_COM;
@@ -213,7 +216,7 @@ namespace AIBigExercise.Controller
             _StackUndo = new Stack<Cell>();
             InitialCellArray();
             _GameBoard.PaintBoard(g);
-            ComMoveByAlBe(g);
+            ComMoveByMinimax(g);
         }
         #region Undo Redo
         public void Undo(Graphics g)
@@ -250,25 +253,25 @@ namespace AIBigExercise.Controller
             MessageBox.Show(winner);
         }
         //kiểm tra trạng thái kết thúc trò chơi
-        public bool TerminalCheck()
+        public bool TerminalCheck(Stack<Cell> StackMoved, Cell[,] GameBoard)
         {
-            if (_StackMoved.Count == SIZE * SIZE)
+            if (StackMoved.Count == SIZE * SIZE)
             {
                 _Result = Board.DRAW;
                 return true;
             }
-            if (_StackMoved.Count < 9)
+            if (StackMoved.Count < 9)
                 return false;
-            for (int i = 0; i < _StackMoved.Count; i++)
+            for (int i = 0; i < StackMoved.Count; i++)
             {
-                Cell cell = _StackMoved.ElementAt(i);
+                Cell cell = StackMoved.ElementAt(i);
                 int CellState = cell.Status;
                 int row = cell.Pos.Row;
                 int col = cell.Pos.Col;
-                if (   CheckFiveInCol(row, col, CellState)
-                    || CheckFiveInRow(row, col, CellState)
-                    || CheckFiveInDiagonalLeftToRight(row, col, CellState)
-                    || CheckFiveInDiagonalRightToLeft(row, col, CellState)
+                if (CheckFiveInCol(GameBoard, row, col, CellState)
+                    || CheckFiveInRow(GameBoard, row, col, CellState)
+                    || CheckFiveInDiagonalLeftToRight(GameBoard, row, col, CellState)
+                    || CheckFiveInDiagonalRightToLeft(GameBoard, row, col, CellState)
                     )
                 {
                     _Result = (CellState == Cell.PLAYER1) ? Board.PLAYER1_WIN : Board.PLAYER2_WIN;
@@ -280,7 +283,7 @@ namespace AIBigExercise.Controller
 
         //Các cách kiểm tra thắng
         //Hàng dọc
-        private bool CheckFiveInCol(int row, int col, int CellState)
+        private bool CheckFiveInCol(Cell[,] GameBoard, int row, int col, int CellState)
         {
             
             if (row > SIZE - 5)
@@ -288,34 +291,34 @@ namespace AIBigExercise.Controller
             int count;
             for (count = 1; count < 5; count++)
             {
-                if (_CellArray[row + count, col].Status != CellState)
+                if (GameBoard[row + count, col].Status != CellState)
                     return false;
             }
             if (row == 0 || row == SIZE - 5)
                 return true;
-            if (_CellArray[row - 1, col].Status == Cell.EMPTY || _CellArray[row + 5, col].Status == Cell.EMPTY)
+            if (GameBoard[row - 1, col].Status == Cell.EMPTY || GameBoard[row + 5, col].Status == Cell.EMPTY)
                 return true;
             return false;
         }
         //Hàng ngang
-        private bool CheckFiveInRow(int row, int col, int CellState)
+        private bool CheckFiveInRow(Cell[,] GameBoard, int row, int col, int CellState)
         {
             if (col > SIZE - 5)
                 return false;
             int count;
             for (count = 1; count < 5; count++)
             {
-                if (_CellArray[row, col + count].Status != CellState)
+                if (GameBoard[row, col + count].Status != CellState)
                     return false;
             }
             if (col == 0 || col == SIZE - 5)
                 return true;
-            if (_CellArray[row, col - 1].Status == Cell.EMPTY || _CellArray[row, col + 5].Status == Cell.EMPTY)
+            if (GameBoard[row, col - 1].Status == Cell.EMPTY || GameBoard[row, col + 5].Status == Cell.EMPTY)
                 return true;
             return false;
         }
         //Đường chéo trái sang phải
-        private bool CheckFiveInDiagonalLeftToRight(int row, int col, int CellState)
+        private bool CheckFiveInDiagonalLeftToRight(Cell[,] GameBoard, int row, int col, int CellState)
         {
             if (row > SIZE - 5)
                 return false;
@@ -324,19 +327,19 @@ namespace AIBigExercise.Controller
             int count;
             for (count = 1; count < 5; count++)
             {
-                if (_CellArray[row + count, col + count].Status != CellState)
+                if (GameBoard[row + count, col + count].Status != CellState)
                     return false;
             }
             if (row == 0 || row == SIZE - 5)
                 return true;
             if (col == 0 || col == SIZE - 5)
                 return true;
-            if (_CellArray[row - 1, col - 1].Status == Cell.EMPTY || _CellArray[row + 5, col + 5].Status == Cell.EMPTY)
+            if (GameBoard[row - 1, col - 1].Status == Cell.EMPTY || GameBoard[row + 5, col + 5].Status == Cell.EMPTY)
                 return true;
             return false;
         }
         //Đường chéo phải sang trái
-        private bool CheckFiveInDiagonalRightToLeft(int row, int col, int CellState)
+        private bool CheckFiveInDiagonalRightToLeft(Cell[,]GameBoard, int row, int col, int CellState)
         {
             if (row > SIZE - 5)
                 return false;
@@ -345,14 +348,14 @@ namespace AIBigExercise.Controller
             int count;
             for (count = 1; count < 5; count++)
             {
-                if (_CellArray[row + count, col - count].Status != CellState)
+                if (GameBoard[row + count, col - count].Status != CellState)
                     return false;
             }
             if (row == 0 || row == SIZE - 5)
                 return true;
             if (col == 4 || col == SIZE - 1)
                 return true;
-            if (_CellArray[row - 1, col + 1].Status == Cell.EMPTY || _CellArray[row + 5, col - 5].Status == Cell.EMPTY)
+            if (GameBoard[row - 1, col + 1].Status == Cell.EMPTY || GameBoard[row + 5, col - 5].Status == Cell.EMPTY)
                 return true;
             return false;
         }
@@ -365,34 +368,34 @@ namespace AIBigExercise.Controller
             {
                 Move((SIZE - 1) / 2 * Cell.SIZE + 1, (SIZE - 1) / 2 * Cell.SIZE + 1, Cell.EMPTY, g);
             }
-            else if(_StackMoved.Count >= 1)
+            else if(_StackMoved.Count >= 1) 
             {
                 long start = CurrentTimeMillis();
                 Position p = new Position();
-                minimax.FindBestMove(ref _CellArray, TL, TR, BL, BR, ref p);
+                minimax.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
                 long end = CurrentTimeMillis();
                 long time = end - start;
                 swmini.WriteLine(time);
                 Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
             }
         }
-        public void ComMoveByAlBe(Graphics g)
-        {
-            if (_StackMoved.Count == 0)
-            {
-                Move((SIZE - 1) / 2 * Cell.SIZE + 1, (SIZE - 1) / 2 * Cell.SIZE + 1, Cell.EMPTY, g);
-            }
-            else
-            {
-                long start = CurrentTimeMillis();
-                Position p = new Position();
-                albe.FindBestMove(ref _CellArray, TL, TR, BL, BR, ref p);
-                long end = CurrentTimeMillis();
-                long time = end - start;
-                //System.IO.File.WriteAllText(@"Runtimes\AlphaBeta.txt", time + "\n");
-                Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
-            }
-        }
+        //public void ComMoveByAlBe(Graphics g)
+        //{
+        //    if (_StackMoved.Count == 0)
+        //    {
+        //        Move((SIZE - 1) / 2 * Cell.SIZE + 1, (SIZE - 1) / 2 * Cell.SIZE + 1, Cell.EMPTY, g);
+        //    }
+        //    else
+        //    {
+        //        long start = CurrentTimeMillis();
+        //        Position p = new Position();
+        //        albe.FindBestMove(ref _CellArray, TL, TR, BL, BR, ref p);
+        //        long end = CurrentTimeMillis();
+        //        long time = end - start;
+        //        //System.IO.File.WriteAllText(@"Runtimes\AlphaBeta.txt", time + "\n");
+        //        Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
+        //    }
+        //}
         #endregion
     }
 }

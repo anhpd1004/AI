@@ -98,7 +98,7 @@ namespace AIBigExercise
             long end = CaroGame.CurrentTimeMillis();
             MessageBox.Show(xxxx + " - " + (end - start));
             picUndo.Enabled = true;
-            if (CaroGame.TerminalCheck())
+            if (CaroGame.TerminalCheck(CaroGame.StackMoved, CaroGame.CellArray))
             {
                 CaroGame.TerminalGame();
                 CaroGame.IsReady = false;
@@ -107,12 +107,12 @@ namespace AIBigExercise
             }
             else if (CaroGame.Mode == CaroGame.PLAYER_VS_COM)
             {
-                CaroGame.ComMoveByAlBe(g);
+                CaroGame.ComMoveByMinimax(g);
                 start = CaroGame.CurrentTimeMillis();
                 xxxx = minimax.Evaluate(CaroGame.CellArray, Cell.PLAYER2);
                 end = CaroGame.CurrentTimeMillis();
                 MessageBox.Show(xxxx + " - " + (end - start));
-                if (CaroGame.TerminalCheck())
+                if (CaroGame.TerminalCheck(CaroGame.StackMoved, CaroGame.CellArray))
                 {
                     CaroGame.TerminalGame();
                     CaroGame.IsReady = false;

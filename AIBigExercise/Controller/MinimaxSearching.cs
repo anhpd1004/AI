@@ -10,9 +10,12 @@ namespace AIBigExercise.Controller
 {
     class MinimaxSearching : BaseSearching
     {
+
+       
+
         //Max player is Computer
         //depth la do sau
-        public long MiniMax(ref Cell[,] GameBoard, int depth, bool IsMax, Position TL, Position TR, Position BL, Position BR)
+        public long MiniMax(ref Cell[,] GameBoard, ref Stack<Cell> StackMoved, int depth, bool IsMax, Position TL, Position TR, Position BL, Position BR)
         {
             if (depth == DEPTH)
             {
@@ -40,7 +43,8 @@ namespace AIBigExercise.Controller
             if (IsMax)
             {
                 long best = -1000000000000;
-                List<Position> list = GenMoves(GameBoard, Cell.PLAYER2, TL, TR, BL, BR);
+                List<Position> list = GenMoves(GameBoard, Cell.PLAYER2, StackMoved);
+                CaroGame cg = new CaroGame();
                 for (int x = 0; x < list.Count; x++)
                 {
                     int i = list[x].Row;
@@ -48,8 +52,16 @@ namespace AIBigExercise.Controller
                     if (GameBoard[i, j].Status == Cell.EMPTY)
                     {
                         GameBoard[i, j].Status = Cell.PLAYER2;
-                        long v = MiniMax(ref GameBoard, depth - 1, !IsMax, TL, TR, BL, BR);
+                        StackMoved.Push(new Cell(new Position(i, j), new Point(), Cell.PLAYER2));
+                        if (cg.TerminalCheck(StackMoved, GameBoard))
+                        {
+                            GameBoard[i, j].Status = Cell.EMPTY;
+                            StackMoved.Pop();
+                            return Evaluate(GameBoard, Cell.PLAYER2);
+                        }
+                        long v = MiniMax(ref GameBoard, ref StackMoved, depth - 1, !IsMax, TL, TR, BL, BR);
                         GameBoard[i, j].Status = Cell.EMPTY;
+                        StackMoved.Pop();
                         if (v > best)
                         {
                             best = v;
@@ -61,7 +73,8 @@ namespace AIBigExercise.Controller
             else
             {
                 long best = 1000000000000;
-                List<Position> list = GenMoves(GameBoard, Cell.PLAYER1, TL, TR, BL, BR);
+                List<Position> list = GenMoves(GameBoard, Cell.PLAYER1, StackMoved);
+                CaroGame cg = new CaroGame();
                 for (int x = 0; x < list.Count; x++)
                 {
                     int i = list[x].Row;
@@ -69,8 +82,16 @@ namespace AIBigExercise.Controller
                     if (GameBoard[i, j].Status == Cell.EMPTY)
                     {
                         GameBoard[i, j].Status = Cell.PLAYER1;
-                        long v = MiniMax(ref GameBoard, depth - 1, !IsMax, TL, TR, BL, BR);
+                        StackMoved.Push(new Cell(new Position(i, j), new Point(), Cell.PLAYER1));
+                        if (cg.TerminalCheck(StackMoved, GameBoard))
+                        {
+                            GameBoard[i, j].Status = Cell.EMPTY;
+                            StackMoved.Pop();
+                            return Evaluate(GameBoard, Cell.PLAYER2);
+                        }
+                        long v = MiniMax(ref GameBoard, ref StackMoved, depth - 1, !IsMax, TL, TR, BL, BR);
                         GameBoard[i, j].Status = Cell.EMPTY;
+                        StackMoved.Pop();
                         if (v < best)
                         {
                             best = v;
@@ -80,7 +101,7 @@ namespace AIBigExercise.Controller
                 return best;
             }
         }
-        public override void FindBestMove(ref Cell[,] GameBoard, Position TL, Position TR, Position BL, Position BR, ref Position result)
+        public void FindBestMove(ref Cell[,] GameBoard, ref Stack<Cell> StackMoved, Position TL, Position TR, Position BL, Position BR, ref Position result)
         {
             Cell cell = new Cell();
             long BestVal = -1000000000000;
@@ -100,7 +121,7 @@ namespace AIBigExercise.Controller
                 BR.Row += 2;
             if (BR.Col + 2 <= n - 1)
                 BR.Col += 2;
-            List<Position> list = GenMoves(GameBoard, Cell.PLAYER2, TL, TR, BL, BR);
+            List<Position> list = GenMoves(GameBoard, Cell.PLAYER2, StackMoved);
             for (int x = 0; x < list.Count; x++)
             {
                 int i = list[x].Row;
@@ -108,8 +129,10 @@ namespace AIBigExercise.Controller
                 if (GameBoard[i, j].Status == Cell.EMPTY)
                 {
                     GameBoard[i, j].Status = Cell.PLAYER2;
-                    long val = MiniMax(ref GameBoard, DEPTH - 1, false, TL, TR, BL, BR);
+                    StackMoved.Push(new Cell(new Position(i, j), new Point(), Cell.PLAYER2));
+                    long val = MiniMax(ref GameBoard, ref StackMoved, DEPTH - 1, false, TL, TR, BL, BR);
                     GameBoard[i, j].Status = Cell.EMPTY;
+                    StackMoved.Pop();
                     if (val > BestVal)
                     {
                         BestVal = val;

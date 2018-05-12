@@ -213,7 +213,7 @@ namespace AIBigExercise.Controller
             _StackUndo = new Stack<Cell>();
             InitialCellArray();
             _GameBoard.PaintBoard(g);
-            ComMoveByMinimax(g);
+            ComMoveByAlBe(g);
         }
         #region Undo Redo
         public void Undo(Graphics g)
@@ -386,7 +386,7 @@ namespace AIBigExercise.Controller
             {
                 long start = CurrentTimeMillis();
                 Position p = new Position();
-                albe.AlBe(_CellArray, BaseSearching.DEPTH, true, TL, TR, BL, BR, ref p);
+                albe.FindBestMove(ref _CellArray, TL, TR, BL, BR, ref p);
                 long end = CurrentTimeMillis();
                 long time = end - start;
                 //System.IO.File.WriteAllText(@"Runtimes\AlphaBeta.txt", time + "\n");

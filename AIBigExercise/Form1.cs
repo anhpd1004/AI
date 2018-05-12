@@ -99,7 +99,7 @@ namespace AIBigExercise
             }
             else if (CaroGame.Mode == CaroGame.PLAYER_VS_COM)
             {
-                CaroGame.ComMoveByMinimax(g);
+                CaroGame.ComMoveByAlBe(g);
                 start = CaroGame.CurrentTimeMillis();
                 xxxx = minimax.Evaluate(CaroGame.CellArray, Cell.PLAYER2);
                 end = CaroGame.CurrentTimeMillis();

@@ -15,18 +15,21 @@ namespace AIBigExercise.Controller
         //mảng điểm số
         //public long[] AttackGrades = new long[7] { 0, 3, 24, 192, 1536, 12288, 98304 };
         //public long[] DefenseGrades = new long[7] { 0, 1, 9, 81, 729, 6561, 59049 };
-        public string[] XCase = { @"o(\w){1,5}o", @"\s\sx\s\s", @"\sxx\s", @"oxx\sx\s", @"\sx\sxxo", @"ox\sxx\s", @"\sxx\sxo", @"\sxxxo", @"oxxx\s",@"\sxxx\s",
-                                    @"xx\sx",@"x\sxx", 
-                                    @"[^o]\sxxxxo", @"oxxxx\s[^o]", @"\sxxxx\s", 
-                                    @"\sxxxxxo", @"oxxxxx\s" };
-        public string[] OCase = {@"x(\w){1,5}x", @"\s\so\s\s", @"\soo\s", @"xoo\so", @"o\soox",@"xo\soo\s", @"\soo\sox", @"\sooox", @"xooo\s", @"\sooo\s",
-                                    @"oo\so", @"o\soo", 
-                                    @"[^x]\soooox", @"xoooo\s[^x]", @"\soooo\s",
-                                    @"\sooooox", @"xooooo\s" };
-        public long[] point = { 0, 4, 10, 8, 8, 15, 15, 20, 20, 400,
-                                  40, 40,
-                                  1000, 1000, 3000,
-                                  10000, 10000};
+        //public string[] XCase = { @"o(\w){1,5}o",  @"\sxx\s", @"oxx\sx\s", @"\sx\sxxo", @"ox\sxx\s", @"\sxx\sxo", @"\sxxxo", @"oxxx\s",@"\sxxx\s",
+        //                            @"xx\sx",@"x\sxx", 
+        //                            @"[^o]\sxxxxo", @"oxxxx\s[^o]", @"\sxxxx\s", 
+        //                            @"\sxxxxxo", @"oxxxxx\s" };
+        //public string[] OCase = {@"x(\w){1,5}x", @"\soo\s", @"xoo\so", @"o\soox",@"xo\soo\s", @"\soo\sox", @"\sooox", @"xooo\s", @"\sooo\s",
+        //                            @"oo\so", @"o\soo", 
+        //                            @"[^x]\soooox", @"xoooo\s[^x]", @"\soooo\s",
+        //                            @"\sooooox", @"xooooo\s" };
+        //public long[] point = { 0, 10, 8, 8, 15, 15, 20, 20, 400,
+        //                          40, 40,
+        //                          1000, 1000, 3000,
+        //                          10000, 10000};
+        public String[] XCase = { @"\sxx\s", @"oxxx\s", @"\sxxxo", @"\sxxx\s", @"[^o]\sxxxxo", @"oxxxx\s[^o]", @"\sxxxx\s[^o]", @"[^o]\sxxxx\s", @"oxxxxx\s", @"\sxxxxxo" };
+        public String[] OCase = { @"\soo\s", @"xooo\s", @"\sooox", @"\sooo\s", @"[^x]\soooox", @"xoooo\s[^x]", @"\soooo\s[^x]", @"[^x]\soooo\s", @"0oooox\s", @"\sooooox" };
+        public long[] point = { 10, 40, 40, 100, 1000, 1000, 10000, 10000, 10000, 10000 };
         public const int DEPTH = 3;
         public const int n = 20;
         //public Cell[,] GameBoard;
@@ -93,26 +96,15 @@ namespace AIBigExercise.Controller
             List<Position> movingList = new List<Position>();
             //sap xep giam dan theo value
             //movings.OrderByDescendin();
+            long l = Evaluate(GameBoard, Cell.PLAYER2);
+            int cst = (l >= 0) ? Cell.PLAYER2 : Cell.PLAYER1;
             for (int i = TL.Row; i <= BL.Row; i++)
             {
                 for (int j = TL.Col; j <= TR.Col; j++)
                 {
                     if (GameBoard[i, j].Status == Cell.EMPTY)
                     {
-                        GameBoard[i, j].Status = Cell.PLAYER1;
-                        long value = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
-                        GameBoard[i, j].Status = Cell.EMPTY;
-                        movings.Add(new Position(i, j), value);
-                    }
-                }
-            }
-            for (int i = TL.Row; i <= BL.Row; i++)
-            {
-                for (int j = TL.Col; j <= TR.Col; j++)
-                {
-                    if (GameBoard[i, j].Status == Cell.EMPTY)
-                    {
-                        GameBoard[i, j].Status = Cell.PLAYER2;
+                        GameBoard[i, j].Status = cst;
                         long value = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
                         GameBoard[i, j].Status = Cell.EMPTY;
                         movings.Add(new Position(i, j), value);

@@ -486,7 +486,6 @@
             // timerChuChay
             // 
             this.timerChuChay.Interval = 30;
-            this.timerChuChay.Tick += new System.EventHandler(this.timerChuChay_Tick);
             // 
             // button1
             // 

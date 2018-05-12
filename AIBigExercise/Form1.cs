@@ -7,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -26,6 +27,9 @@ namespace AIBigExercise
             btnPlayerVsPlayer.MouseClick += PvsP;
             btnPlayerVsComputer.MouseClick += PvsC;
             btnThoatGame.MouseClick += exitToolStripMenuItem_Click;
+            ThreadStart childref = new ThreadStart(CallTimerTick);
+            Thread childThread = new Thread(childref);
+            childThread.Start();
         }
 
         void groupBox1_MouseLeave(object sender, EventArgs e)
@@ -45,6 +49,10 @@ namespace AIBigExercise
             btnPlayerVsComputer.Enabled = false;
             btnPlayerVsPlayer.Enabled = false;
             picBay.Visible = false;
+        }
+        private void CallTimerTick()
+        {
+            this.timerChuChay.Tick += new System.EventHandler(this.timerChuChay_Tick);
         }
 
         private void timerChuChay_Tick(object sender, EventArgs e)

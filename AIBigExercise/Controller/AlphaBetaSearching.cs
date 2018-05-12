@@ -32,7 +32,7 @@ namespace AIBigExercise.Controller
             }
             if (depth == 0)
             {
-                return Evaluate(GameBoard);
+                return Evaluate(GameBoard, Cell.PLAYER2);
             }
             long BestMax = -1000000000000;
             long BestMin = 1000000000000;

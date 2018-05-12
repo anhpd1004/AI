@@ -11,24 +11,24 @@ namespace AIBigExercise.Controller
 {
     class BaseSearching
     {
+
         //mảng điểm số
         //public long[] AttackGrades = new long[7] { 0, 3, 24, 192, 1536, 12288, 98304 };
         //public long[] DefenseGrades = new long[7] { 0, 1, 9, 81, 729, 6561, 59049 };
-        public string[] XCase = { @"o(\w){1,5}o",@"\sxx\s", @"oxx\sx", @"x\sxxo", @"ox\sxx\s", @"\sxx\sxo", @"\sxxxo", @"oxxx\s",@"\sxxx\s",
+        public string[] XCase = { @"o(\w){1,5}o", @"\s\sx\s\s", @"\sxx\s", @"oxx\sx\s", @"\sx\sxxo", @"ox\sxx\s", @"\sxx\sxo", @"\sxxxo", @"oxxx\s",@"\sxxx\s",
                                     @"xx\sx",@"x\sxx", 
-                                    @"\sxxxxo", @"oxxxx\s", @"\sxxxx\s", 
-                                    @"xxxxx" };
-        public string[] OCase = {@"x(\w){1,5}x", @"\soo\s", @"xoo\so", @"o\soox",@"xo\soo\s", @"\soo\sox", @"\sooox", @"xooo\s", @"\sooo\s",
+                                    @"[^o]\sxxxxo", @"oxxxx\s[^o]", @"\sxxxx\s", 
+                                    @"\sxxxxxo", @"oxxxxx\s" };
+        public string[] OCase = {@"x(\w){1,5}x", @"\s\so\s\s", @"\soo\s", @"xoo\so", @"o\soox",@"xo\soo\s", @"\soo\sox", @"\sooox", @"xooo\s", @"\sooo\s",
                                     @"oo\so", @"o\soo", 
-                                    @"\soooox", @"xoooo\s", @"\soooo\s",
-                                    @"ooooo" };
-        public long[] point = { -10, 10, 4, 4, 15, 15, 5, 5, 100,
+                                    @"[^x]\soooox", @"xoooo\s[^x]", @"\soooo\s",
+                                    @"\sooooox", @"xooooo\s" };
+        public long[] point = { 0, 4, 10, 8, 8, 15, 15, 20, 20, 400,
                                   40, 40,
-                                  100, 100, 300,
-                                  1000 };
-        public const int DEPTH = 5;
+                                  1000, 1000, 3000,
+                                  10000, 10000};
+        public const int DEPTH = 3;
         public const int n = 20;
-        public Position TL, TR, BL, BR;
         //public Cell[,] GameBoard;
 
         //public void Copy(Cell[,] cells)
@@ -44,34 +44,93 @@ namespace AIBigExercise.Controller
         //}
         public virtual void GetBound(Position TL, Position TR, Position BL, Position BR)
         {
-            this.TL = TL;
-            this.TR = TR;
-            this.BL = BL;
-            this.BR = BR;
+            return;
         }
-        public virtual void NewBound()
+        //xem có thể thay đổi top left đc không từ row và col
+        private void TopLeft(ref Position TL, int row, int col)
         {
-            if (TL.Row - 2 >= 0)
-                TL.Row -= 2;
-            if (TL.Col - 2 >= 0)
-                TL.Col -= 2;
-            if (TR.Col + 2 <= n - 1)
-                TR.Col += 2;
-            if (TR.Row - 2 >= 0)
-                TR.Row -= 2;
-            if (BL.Row + 2 <= n - 1)
-                BL.Row += 2;
-            if (BL.Col - 2 >= 0)
-                BL.Col -= 2;
-            if (BR.Row + 2 <= n - 1)
-                BR.Row += 2;
-            if (BR.Col + 2 <= n - 1)
-                BR.Col += 2;
+            if (row < TL.Row)
+                TL.Row = row;
+            if (col < TL.Col)
+                TL.Col = col;
+        }
+        private void TopRight(ref Position TR, int row, int col)
+        {
+            if (row < TR.Row)
+                TR.Row = row;
+            if (col > TR.Col)
+                TR.Col = col;
+        }
+        private void BottomLeft(ref Position BL, int row, int col)
+        {
+            if (row > BL.Row)
+                BL.Row = row;
+            if (col < BL.Col)
+                BL.Col = col;
+        }
+        private void BottomRight(ref Position BR,int row, int col)
+        {
+            if (row > BR.Row)
+                BR.Row = row;
+            if (col > BR.Col)
+                BR.Col = col;
+        }
+        public virtual void NewBound(Position NewMove, ref Position TL, ref Position TR, ref Position BL, ref Position BR)
+        {
+            TopLeft(ref TL, NewMove.Row, NewMove.Col);
+            TopRight(ref TL, NewMove.Row, NewMove.Col);
+            BottomLeft(ref TL, NewMove.Row, NewMove.Col);
+            BottomRight(ref TL, NewMove.Row, NewMove.Col);
+        }
+        public virtual void NewScope()
+        {
+
         }
         //sinh cac nuoc di co hieu qua
-        public List<Position> GenMoves(Cell[,] GameBoard)
+        public virtual List<Position> GenMoves(Cell[,] GameBoard, int CellState, Position TL, Position TR, Position BL, Position BR)
         {
-            return new List<Position>();
+            Dictionary<Position, long> movings = new Dictionary<Position, long>();
+            List<Position> movingList = new List<Position>();
+            //sap xep giam dan theo value
+            //movings.OrderByDescendin();
+            for (int i = TL.Row; i <= BL.Row; i++)
+            {
+                for (int j = TL.Col; j <= TR.Col; j++)
+                {
+                    if (GameBoard[i, j].Status == Cell.EMPTY)
+                    {
+                        GameBoard[i, j].Status = Cell.PLAYER1;
+                        long value = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
+                        GameBoard[i, j].Status = Cell.EMPTY;
+                        movings.Add(new Position(i, j), value);
+                    }
+                }
+            }
+            for (int i = TL.Row; i <= BL.Row; i++)
+            {
+                for (int j = TL.Col; j <= TR.Col; j++)
+                {
+                    if (GameBoard[i, j].Status == Cell.EMPTY)
+                    {
+                        GameBoard[i, j].Status = Cell.PLAYER2;
+                        long value = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
+                        GameBoard[i, j].Status = Cell.EMPTY;
+                        movings.Add(new Position(i, j), value);
+                    }
+                }
+            }
+            Dictionary<Position, long> sortedDict = movings.OrderByDescending(entry => entry.Value).ToDictionary(entry => entry.Key, entry => entry.Value);
+            int dem = 0;
+            foreach (Position p in sortedDict.Keys)
+            {
+                movingList.Add(p);
+                dem++;
+                if (dem >= 3)
+                {
+                    break;
+                }
+            }
+            return movingList;
         }
         public virtual long AttackGradeInRow(int CurrRow, int CurrCol)
         {
@@ -149,8 +208,13 @@ namespace AIBigExercise.Controller
             }
             return s;
         }
-
-        public virtual long Evaluate(Cell[,] GameBoard)
+        public virtual String LineToString(Cell[,] GameBoard, Position currPos) {
+            String s = "";
+            int row = currPos.Row;
+            int col = currPos.Col;
+            return s;
+        }
+        public virtual long Evaluate(Cell[,] GameBoard, int CellState)
         {
             long grades = 0;
             string s = BoardToString(GameBoard);
@@ -159,14 +223,50 @@ namespace AIBigExercise.Controller
             {
                 regex1 = new Regex(XCase[i], RegexOptions.IgnoreCase);
                 regex2 = new Regex(OCase[i], RegexOptions.IgnoreCase);
-                grades += point[i] * regex2.Matches(s).Count;
-                grades -= point[i] * regex1.Matches(s).Count;
+                if (CellState == Cell.PLAYER2)
+                {
+                    if (i == 1)
+                    {
+                        if (regex2.Match(s) != null)
+                        {
+                            grades += point[i];
+                        }
+                        if (regex1.Match(s) != null)
+                        {
+                            grades -= point[i];
+                        }
+                    }
+                    else
+                    {
+                        grades += point[i] * regex2.Matches(s).Count;
+                        grades -= point[i] * regex1.Matches(s).Count;
+                    }
+                }
+                else
+                {
+                    if (i == 1)
+                    {
+                        if (regex2.Match(s) != null)
+                        {
+                            grades -= point[i];
+                        }
+                        if (regex1.Match(s) != null)
+                        {
+                            grades += point[i];
+                        }
+                    }
+                    else
+                    {
+                        grades -= point[i] * regex2.Matches(s).Count;
+                        grades += point[i] * regex1.Matches(s).Count;
+                    }
+                }
             }
             return grades;
         }
-        public virtual Cell FindBestMove(Cell[,] GameBoard, Position TL, Position TR, Position BL, Position BR)
+        public virtual void FindBestMove(ref Cell[,] GameBoard, Position TL, Position TR, Position BL, Position BR, ref Position result)
         {
-            return new Cell();
+            return;
         }
     }
 }

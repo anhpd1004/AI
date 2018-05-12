@@ -44,6 +44,7 @@ namespace AIBigExercise
             btnNewGame.Enabled = true;
             btnPlayerVsComputer.Enabled = false;
             btnPlayerVsPlayer.Enabled = false;
+            picBay.Visible = false;
         }
 
         private void timerChuChay_Tick(object sender, EventArgs e)
@@ -56,6 +57,14 @@ namespace AIBigExercise
             else
             {
                 labelChuChay.Location = new Point(x, labelChuChay.Location.Y - 1);
+            }
+            int xx = picBay.Location.X;
+            int yy = picBay.Location.Y;
+            if (picBay.Visible)
+            {
+                xx = (xx <= panelBoard.Width - 20) ? (xx + 1) : xx;
+                yy = (yy >= 15) ? (yy - 1) : yy;
+                picBay.Location = new Point(xx, yy);
             }
         }
 
@@ -75,19 +84,32 @@ namespace AIBigExercise
             bool move = CaroGame.Move(x, y, CaroGame.CellArray[y/Cell.SIZE,x/Cell.SIZE].Status, g);
             if (!move)
                 return;
+            MinimaxSearching minimax = new MinimaxSearching();
+            long start = CaroGame.CurrentTimeMillis();
+            long xxxx = minimax.Evaluate(CaroGame.CellArray, Cell.PLAYER2);
+            long end = CaroGame.CurrentTimeMillis();
+            MessageBox.Show(xxxx + " - " + (end - start));
             picUndo.Enabled = true;
             if (CaroGame.TerminalCheck())
             {
                 CaroGame.TerminalGame();
                 CaroGame.IsReady = false;
+                picUndo.Enabled = false;
+                picRedo.Enabled = false;
             }
             else if (CaroGame.Mode == CaroGame.PLAYER_VS_COM)
             {
-                CaroGame.ComMoveByAlBe(g);
+                CaroGame.ComMoveByMinimax(g);
+                start = CaroGame.CurrentTimeMillis();
+                xxxx = minimax.Evaluate(CaroGame.CellArray, Cell.PLAYER2);
+                end = CaroGame.CurrentTimeMillis();
+                MessageBox.Show(xxxx + " - " + (end - start));
                 if (CaroGame.TerminalCheck())
                 {
                     CaroGame.TerminalGame();
                     CaroGame.IsReady = false;
+                    picUndo.Enabled = false;
+                    picRedo.Enabled = false;
                 }
             }
         }
@@ -216,6 +238,11 @@ namespace AIBigExercise
             btnPlayerVsComputer.Enabled = true;
             btnPlayerVsPlayer.Enabled = true;
             btnNewGame.Enabled = false;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            picBay.Visible = true;
         }
     }
 }

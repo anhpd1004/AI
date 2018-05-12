@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,16 +34,14 @@ namespace AIBigExercise.Controller
         private byte _Mode;//chế độ chơi
         private MinimaxSearching minimax;
         private AlphaBetaSearching albe;
+        private StreamWriter swmini;
+        //StreamWriter swalbe = File.CreateText(@"AlphaBeta.txt");
         
 
         #region Construstor
         public CaroGame()
         {
             this._IsReady = false;
-            TL = new Position((SIZE - 1) / 2, (SIZE - 1) / 2);
-            TR = new Position((SIZE - 1) / 2, (SIZE - 1) / 2);
-            BL = new Position((SIZE - 1) / 2, (SIZE - 1) / 2);
-            BR = new Position((SIZE - 1) / 2, (SIZE - 1) / 2);
             this._GameBoard = new Board(SIZE);
             _StackMoved = new Stack<Cell>();
             _StackUndo = new Stack<Cell>();
@@ -68,6 +67,11 @@ namespace AIBigExercise.Controller
                     this._CellArray[i, j] = new Cell(pos, loc, Cell.EMPTY);
                 }
             }
+
+            TL = new Position((SIZE - 1) / 2, (SIZE - 1) / 2);
+            TR = new Position((SIZE - 1) / 2, (SIZE - 1) / 2);
+            BL = new Position((SIZE - 1) / 2, (SIZE - 1) / 2);
+            BR = new Position((SIZE - 1) / 2, (SIZE - 1) / 2);
         }
         #endregion
         #region property cho cac bien
@@ -201,14 +205,15 @@ namespace AIBigExercise.Controller
         }
         public void StartPlayerVsCom(Graphics g)
         {
+            swmini = File.CreateText("Minimax.txt");
             this._IsReady = true;
-            this._Move = 3;//Máy chơi trước
+            _Move = 3;
             this._Mode = CaroGame.PLAYER_VS_COM;
             _StackMoved = new Stack<Cell>();
             _StackUndo = new Stack<Cell>();
             InitialCellArray();
             _GameBoard.PaintBoard(g);
-            ComMoveByAlBe(g);
+            ComMoveByMinimax(g);
         }
         #region Undo Redo
         public void Undo(Graphics g)
@@ -238,6 +243,7 @@ namespace AIBigExercise.Controller
         //kết thúc trò chơi
         public void TerminalGame()
         {
+            swmini.Close();
             String winner = (_Result == Board.DRAW) ? "Draw game" 
                 : (_Result == Board.PLAYER1_WIN ? "Player 1 win" 
                 :(_Result == Board.PLAYER2_WIN ? "Player 2 win" : "Computer win"));
@@ -355,18 +361,18 @@ namespace AIBigExercise.Controller
 
         public void ComMoveByMinimax(Graphics g)
         {
-            if (_StackMoved.Count == 0)
+            if (_StackMoved.Count == 0 && _Move == 3)
             {
                 Move((SIZE - 1) / 2 * Cell.SIZE + 1, (SIZE - 1) / 2 * Cell.SIZE + 1, Cell.EMPTY, g);
             }
-            else
+            else if(_StackMoved.Count >= 1)
             {
                 long start = CurrentTimeMillis();
                 Position p = new Position();
-                minimax.MiniMax(_CellArray, BaseSearching.DEPTH, true, TL, TR, BL, BR, ref p);
+                minimax.FindBestMove(ref _CellArray, TL, TR, BL, BR, ref p);
                 long end = CurrentTimeMillis();
                 long time = end - start;
-                //System.IO.File.WriteAllText(@".\Runtimes\Minimax.txt", time + "\n");
+                swmini.WriteLine(time);
                 Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
             }
         }

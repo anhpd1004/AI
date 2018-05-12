@@ -12,7 +12,7 @@ namespace AIBigExercise.Controller
     {
         //Max player is Computer
         //depth la do sau
-        public long MiniMax(Cell[,] GameBoard, int depth, bool IsMax, Position TL, Position TR, Position BL, Position BR, ref Position result)
+        public long MiniMax(ref Cell[,] GameBoard, int depth, bool IsMax, Position TL, Position TR, Position BL, Position BR)
         {
             if (depth == DEPTH)
             {
@@ -33,29 +33,26 @@ namespace AIBigExercise.Controller
                 if (BR.Col + 2 <= n - 1)
                     BR.Col += 2;
             }
-            long val = Evaluate(GameBoard);
             if (depth == 0)
             {
-                return val;
+                return Evaluate(GameBoard, Cell.PLAYER2);
             }
             if (IsMax)
             {
                 long best = -1000000000000;
-                for (int i = TL.Row; i < BL.Row + 1; i++)
+                List<Position> list = GenMoves(GameBoard, Cell.PLAYER2, TL, TR, BL, BR);
+                for (int x = 0; x < list.Count; x++)
                 {
-                    for (int j = TL.Col; j < TR.Col + 1; j++)
+                    int i = list[x].Row;
+                    int j = list[x].Col;
+                    if (GameBoard[i, j].Status == Cell.EMPTY)
                     {
-                        if (GameBoard[i, j].Status == Cell.EMPTY)
+                        GameBoard[i, j].Status = Cell.PLAYER2;
+                        long v = MiniMax(ref GameBoard, depth - 1, !IsMax, TL, TR, BL, BR);
+                        GameBoard[i, j].Status = Cell.EMPTY;
+                        if (v > best)
                         {
-                            GameBoard[i, j].Status = Cell.PLAYER2;
-                            long v = MiniMax(GameBoard, depth - 1, !IsMax, TL, TR, BL, BR, ref result);
-                            GameBoard[i, j].Status = Cell.EMPTY;
-                            if (v > best)
-                            {
-                                result.Row = i;
-                                result.Col = j;
-                                best = v;
-                            }
+                            best = v;
                         }
                     }
                 }
@@ -64,70 +61,62 @@ namespace AIBigExercise.Controller
             else
             {
                 long best = 1000000000000;
-                for (int i = TL.Row; i < BL.Row + 1; i++)
+                List<Position> list = GenMoves(GameBoard, Cell.PLAYER1, TL, TR, BL, BR);
+                for (int x = 0; x < list.Count; x++)
                 {
-                    for (int j = TL.Col; j < TR.Col + 1; j++)
+                    int i = list[x].Row;
+                    int j = list[x].Col;
+                    if (GameBoard[i, j].Status == Cell.EMPTY)
                     {
-                        if (GameBoard[i, j].Status == Cell.EMPTY)
+                        GameBoard[i, j].Status = Cell.PLAYER1;
+                        long v = MiniMax(ref GameBoard, depth - 1, !IsMax, TL, TR, BL, BR);
+                        GameBoard[i, j].Status = Cell.EMPTY;
+                        if (v < best)
                         {
-                            GameBoard[i, j].Status = Cell.PLAYER1;
-                            long v = MiniMax(GameBoard, depth - 1, !IsMax, TL, TR, BL, BR, ref result);
-                            GameBoard[i, j].Status = Cell.EMPTY;
-                            if (v < best)
-                            {
-                                result.Row = i;
-                                result.Col = j;
-                                best = v;
-                            }
+                            best = v;
                         }
                     }
                 }
                 return best;
             }
         }
-        //public override Cell FindBestMove(Cell[,] GameBoard, Position TL, Position TR, Position BL, Position BR)
-        //{
-        //    Cell cell = new Cell();
-        //    long BestVal = -1000000000000;
-        //    int BestRow = -1;
-        //    int BestCol = -1;
-        //    if (TL.Row - 2 >= 0)
-        //        TL.Row -= 2;
-        //    if (TL.Col - 2 >= 0)
-        //        TL.Col -= 2;
-        //    if (TR.Col + 2 <= n - 1)
-        //        TR.Col += 2;
-        //    if (TR.Row - 2 >= 0)
-        //        TR.Row -= 2;
-        //    if (BL.Row + 2 <= n - 1)
-        //        BL.Row += 2;
-        //    if (BL.Col - 2 >= 0)
-        //        BL.Col -= 2;
-        //    if (BR.Row + 2 <= n - 1)
-        //        BR.Row += 2;
-        //    if (BR.Col + 2 <= n - 1)
-        //        BR.Col += 2;
-        //    for (int i = TL.Row; i < BL.Row + 1; i++)
-        //    {
-        //        for (int j = TL.Col; j < TR.Col + 1; j++)
-        //        {
-        //            if (GameBoard[i, j].Status == Cell.EMPTY)
-        //            {
-        //                GameBoard[i, j].Status = Cell.PLAYER2;
-        //                long val = MiniMax(GameBoard, DEPTH, false, TL, TR, BL, BR);
-        //                GameBoard[i, j].Status = Cell.EMPTY;
-        //                if (val > BestVal)
-        //                {
-        //                    BestVal = val;
-        //                    BestRow = i;
-        //                    BestCol = j;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    cell.Pos = new Position(BestRow, BestCol);
-        //    cell.Location = new Point(BestCol * Cell.SIZE + 1, BestRow * Cell.SIZE + 1);
-        //    return cell;
-        //}
+        public override void FindBestMove(ref Cell[,] GameBoard, Position TL, Position TR, Position BL, Position BR, ref Position result)
+        {
+            Cell cell = new Cell();
+            long BestVal = -1000000000000;
+            if (TL.Row - 2 >= 0)
+                TL.Row -= 2;
+            if (TL.Col - 2 >= 0)
+                TL.Col -= 2;
+            if (TR.Col + 2 <= n - 1)
+                TR.Col += 2;
+            if (TR.Row - 2 >= 0)
+                TR.Row -= 2;
+            if (BL.Row + 2 <= n - 1)
+                BL.Row += 2;
+            if (BL.Col - 2 >= 0)
+                BL.Col -= 2;
+            if (BR.Row + 2 <= n - 1)
+                BR.Row += 2;
+            if (BR.Col + 2 <= n - 1)
+                BR.Col += 2;
+            List<Position> list = GenMoves(GameBoard, Cell.PLAYER2, TL, TR, BL, BR);
+            for (int x = 0; x < list.Count; x++)
+            {
+                int i = list[x].Row;
+                int j = list[x].Col;
+                if (GameBoard[i, j].Status == Cell.EMPTY)
+                {
+                    GameBoard[i, j].Status = Cell.PLAYER2;
+                    long val = MiniMax(ref GameBoard, DEPTH - 1, false, TL, TR, BL, BR);
+                    GameBoard[i, j].Status = Cell.EMPTY;
+                    if (val > BestVal)
+                    {
+                        BestVal = val;
+                        result = new Position(i, j);
+                    }
+                }
+            }
+        }
     }
 }

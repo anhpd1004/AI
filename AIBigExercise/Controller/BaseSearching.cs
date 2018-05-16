@@ -120,7 +120,7 @@ namespace AIBigExercise.Controller
             return StackAbilities;
         }
         //sinh cac nuoc di co hieu qua
-        public virtual List<Position> GenMoves(Cell[,] GameBoard, int CellState, Stack<Cell> StackMoved)
+        public virtual List<Position> GenMoves(Cell[,] GameBoard, int CellState, Stack<Cell> StackMoved, ref int count)
         {
             Stack<Position> StackAbilities = Abilities(StackMoved);
             Dictionary<Position, long> movings = new Dictionary<Position, long>();

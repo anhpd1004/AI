@@ -50,7 +50,7 @@ namespace AIBigExercise.Controller
             if (IsMax)
             {
                 long best = -1000000000000;
-                List<Position> list = GenMoves(GameBoard, Cell.PLAYER2, StackMoved);
+                List<Position> list = GenMoves(GameBoard, Cell.PLAYER2, StackMoved, ref count);
                 for (int x = 0; x < list.Count; x++)
                 {
                     int i = list[x].Row;
@@ -73,7 +73,7 @@ namespace AIBigExercise.Controller
             else
             {
                 long best = 1000000000000;
-                List<Position> list = GenMoves(GameBoard, Cell.PLAYER1, StackMoved);
+                List<Position> list = GenMoves(GameBoard, Cell.PLAYER1, StackMoved, ref count);
                 for (int x = 0; x < list.Count; x++)
                 {
                     int i = list[x].Row;
@@ -113,7 +113,7 @@ namespace AIBigExercise.Controller
                 BR.Row += 2;
             if (BR.Col + 2 <= n - 1)
                 BR.Col += 2;
-            List<Position> list = GenMoves(GameBoard, Cell.PLAYER2, StackMoved);
+            List<Position> list = GenMoves(GameBoard, Cell.PLAYER2, StackMoved, ref count);
             for (int x = 0; x < list.Count; x++)
             {
                 int i = list[x].Row;

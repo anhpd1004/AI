@@ -23,6 +23,11 @@ namespace AIBigExercise
         {
             InitializeComponent();
             CaroGame = new CaroGame();
+            //////
+            //chạy một lần rồi comment lại
+            CaroGame.UtilityMinimaxAndAlphabeta();
+            CaroGame.UtilityMinimaxAndAlphabetaNode();
+            //////
             g = panelBoard.CreateGraphics();
             groupBox1.MouseLeave += groupBox1_MouseLeave;
             btnPlayerVsPlayer.MouseClick += PvsP;

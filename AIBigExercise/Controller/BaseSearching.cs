@@ -30,7 +30,7 @@ namespace AIBigExercise.Controller
         public String[] XCase = { @"\sxx\s", @"oxxx\s", @"\sxxxo", @"\sxxx\s", @"[^o]\sxxxxo", @"oxxxx\s[^o]", @"\sxxxx\s", @"\wxxxxx\s", @"\sxxxxx\w" };
         public String[] OCase = { @"\soo\s", @"xooo\s", @"\sooox", @"\sooo\s", @"[^x]\soooox", @"xoooo\s[^x]", @"\soooo\s", @"\wooooo\s", @"\sooooo\w" };
         public long[] point = { 3, 40, 40, 100, 1000, 1000, 1000, 10000, 10000 };
-        public const int DEPTH = 5;
+        public const int DEPTH = 7;
         public const int n = 20;
         //public Cell[,] GameBoard;
 
@@ -120,7 +120,7 @@ namespace AIBigExercise.Controller
             return StackAbilities;
         }
         //sinh cac nuoc di co hieu qua
-        public virtual List<Position> GenMoves(Cell[,] GameBoard, int CellState, Stack<Cell> StackMoved, ref int count)
+        public virtual List<Position> GenMoves(Cell[,] GameBoard, int CellState, Stack<Cell> StackMoved)
         {
             Stack<Position> StackAbilities = Abilities(StackMoved);
             Dictionary<Position, long> movings = new Dictionary<Position, long>();

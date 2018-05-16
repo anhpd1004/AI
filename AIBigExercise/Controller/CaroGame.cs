@@ -247,7 +247,7 @@ namespace AIBigExercise.Controller
         {
             String winner = (_Result == Board.DRAW) ? "Draw game" 
                 : (_Result == Board.PLAYER1_WIN ? "Player 1 win" 
-                :(_Result == Board.PLAYER2_WIN ? "Player 2 win" : "Computer win"));
+                :((_Result == Board.PLAYER2_WIN && _Mode == CaroGame.PLAYER_VS_PLAYER) ? "Player 2 win" : "Computer win"));
             MessageBox.Show(winner);
         }
         //kiểm tra trạng thái kết thúc trò chơi
@@ -387,28 +387,54 @@ namespace AIBigExercise.Controller
             else
             {
                 Position p = new Position();
-                long start = CurrentTimeMillis();
                 int count = 0;
                 minimax.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p, ref count);
-                long end = CurrentTimeMillis();
-                long time = end - start;
-                File.AppendAllText("minimax.txt", (time - count * TIME_EVAL) + "\n");
+                File.AppendAllText("minimaxNode.txt", count + "\n");
                 count = 0;
-                start = CurrentTimeMillis();
                 albe.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p, ref count);
-                end = CurrentTimeMillis();
-                time = end - start;
-                File.AppendAllText("alphabeta.txt", (time - count * TIME_EVAL) + "\n");
+                File.AppendAllText("alphabetaNode.txt", count + "\n");
                 Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
                 //Position p = new Position();
-                //long start = CurrentTimeMillis();
                 //int count = 0;
                 //albe.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p, ref count);
-                //long end = CurrentTimeMillis();
-                //long time = end - start;
-                //File.AppendAllText("alphabeta.txt", (time - count * TIME_EVAL) + "\n");
                 //Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
             }
+        }
+        public void UtilityMinimaxAndAlphabeta()
+        {
+            string[] minmax = File.ReadAllLines("minimax.txt");
+            string[] alphabeta = File.ReadAllLines("alphabeta.txt");
+            float x1 = 0, x2 = 0;
+            string str = "";
+            for (int i = 0; i < minmax.Length; i++)
+            {
+                x1 += float.Parse(minmax[i]);
+            }
+            for (int i = 0; i < alphabeta.Length; i++)
+            {
+                x2 += float.Parse(alphabeta[i]);
+            }
+            str += "Average time of minimax: " + x1 / minmax.Length + "\n";
+            str += "Average time of alpha beta: " + x2 / alphabeta.Length;
+            File.WriteAllText("average.txt", str);
+        }
+        public void UtilityMinimaxAndAlphabetaNode()
+        {
+            string[] minmax = File.ReadAllLines("minimaxNode.txt");
+            string[] alphabeta = File.ReadAllLines("alphabetaNode.txt");
+            int x1 = 0, x2 = 0;
+            string str = "";
+            for (int i = 0; i < minmax.Length; i++)
+            {
+                x1 += Int32.Parse(minmax[i]);
+            }
+            for (int i = 0; i < alphabeta.Length; i++)
+            {
+                x2 += Int32.Parse(alphabeta[i]);
+            }
+            str += "Average node of minimax: " + x1 / minmax.Length + "\n";
+            str += "Average node of alpha beta: " + x2 / alphabeta.Length;
+            File.WriteAllText("averageNode.txt", str);
         }
         #endregion
     }

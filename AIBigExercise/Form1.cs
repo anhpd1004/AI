@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -92,6 +93,12 @@ namespace AIBigExercise
             if (!move)
                 return;
             picUndo.Enabled = true;
+            //BaseSearching bs = new BaseSearching();
+            //long start = CaroGame.CurrentTimeMillis();
+            //bs.Evaluate(CaroGame.CellArray, Cell.PLAYER2);
+            //long end = CaroGame.CurrentTimeMillis();
+            //long time = end - start;
+            //File.AppendAllText("evaluate.txt", time + "\n");
             if (CaroGame.TerminalCheck(CaroGame.StackMoved, CaroGame.CellArray))
             {
                 CaroGame.TerminalGame();

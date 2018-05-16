@@ -16,6 +16,7 @@ namespace AIBigExercise.Controller
 
         public const byte PLAYER_VS_PLAYER = 1;
         public const byte PLAYER_VS_COM = 2;
+        public const float TIME_EVAL = 5.2f;
 
         private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
@@ -369,7 +370,8 @@ namespace AIBigExercise.Controller
             {
                 long start = CurrentTimeMillis();
                 Position p = new Position();
-                minimax.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
+                int count = 0;
+                minimax.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p, ref count);
                 long end = CurrentTimeMillis();
                 long time = end - start;
                 File.AppendAllText("minimax.txt", time + "\n");
@@ -386,22 +388,25 @@ namespace AIBigExercise.Controller
             {
                 Position p = new Position();
                 long start = CurrentTimeMillis();
-                minimax.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
+                int count = 0;
+                minimax.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p, ref count);
                 long end = CurrentTimeMillis();
                 long time = end - start;
-                File.AppendAllText("minimax.txt", time + "\n");
+                File.AppendAllText("minimax.txt", (time - count * TIME_EVAL) + "\n");
+                count = 0;
                 start = CurrentTimeMillis();
-                albe.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
+                albe.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p, ref count);
                 end = CurrentTimeMillis();
                 time = end - start;
-                File.AppendAllText("alphabeta.txt", time + "\n");
+                File.AppendAllText("alphabeta.txt", (time - count * TIME_EVAL) + "\n");
                 Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
                 //Position p = new Position();
                 //long start = CurrentTimeMillis();
-                //albe.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
+                //int count = 0;
+                //albe.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p, ref count);
                 //long end = CurrentTimeMillis();
                 //long time = end - start;
-                //File.AppendAllText("alphabeta.txt", time + "\n");
+                //File.AppendAllText("alphabeta.txt", (time - count * TIME_EVAL) + "\n");
                 //Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
             }
         }

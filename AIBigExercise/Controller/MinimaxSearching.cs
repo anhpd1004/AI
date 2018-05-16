@@ -15,7 +15,7 @@ namespace AIBigExercise.Controller
 
         //Max player is Computer
         //depth la do sau
-        public long MiniMax(ref Cell[,] GameBoard, ref Stack<Cell> StackMoved, int depth, bool IsMax, Position TL, Position TR, Position BL, Position BR)
+        public long MiniMax(ref Cell[,] GameBoard, ref Stack<Cell> StackMoved, int depth, bool IsMax, Position TL, Position TR, Position BL, Position BR, ref int count)
         {
             if (depth == DEPTH)
             {
@@ -39,10 +39,12 @@ namespace AIBigExercise.Controller
             CaroGame cg = new CaroGame();
             if (cg.TerminalCheck(StackMoved, GameBoard))
             {
+                count++;
                 return Evaluate(GameBoard, Cell.PLAYER2);
             }
             if (depth == 0)
             {
+                count++;
                 return Evaluate(GameBoard, Cell.PLAYER2);
             }
             if (IsMax)
@@ -57,7 +59,7 @@ namespace AIBigExercise.Controller
                     {
                         GameBoard[i, j].Status = Cell.PLAYER2;
                         StackMoved.Push(new Cell(new Position(i, j), new Point(), Cell.PLAYER2));
-                        long v = MiniMax(ref GameBoard, ref StackMoved, depth - 1, !IsMax, TL, TR, BL, BR);
+                        long v = MiniMax(ref GameBoard, ref StackMoved, depth - 1, !IsMax, TL, TR, BL, BR, ref count);
                         GameBoard[i, j].Status = Cell.EMPTY;
                         StackMoved.Pop();
                         if (v > best)
@@ -80,7 +82,7 @@ namespace AIBigExercise.Controller
                     {
                         GameBoard[i, j].Status = Cell.PLAYER1;
                         StackMoved.Push(new Cell(new Position(i, j), new Point(), Cell.PLAYER1));
-                        long v = MiniMax(ref GameBoard, ref StackMoved, depth - 1, !IsMax, TL, TR, BL, BR);
+                        long v = MiniMax(ref GameBoard, ref StackMoved, depth - 1, !IsMax, TL, TR, BL, BR, ref count);
                         GameBoard[i, j].Status = Cell.EMPTY;
                         StackMoved.Pop();
                         if (v < best)
@@ -92,7 +94,7 @@ namespace AIBigExercise.Controller
                 return best;
             }
         }
-        public void FindBestMove(ref Cell[,] GameBoard, ref Stack<Cell> StackMoved, Position TL, Position TR, Position BL, Position BR, ref Position result)
+        public void FindBestMove(ref Cell[,] GameBoard, ref Stack<Cell> StackMoved, Position TL, Position TR, Position BL, Position BR, ref Position result, ref int count)
         {
             long BestVal = -1000000000000;
             if (TL.Row - 2 >= 0)
@@ -118,7 +120,7 @@ namespace AIBigExercise.Controller
                 int j = list[x].Col;
                 if (GameBoard[i, j].Status == Cell.EMPTY)
                 {
-                    long val = MiniMax(ref GameBoard, ref StackMoved, DEPTH, true, TL, TR, BL, BR);
+                    long val = MiniMax(ref GameBoard, ref StackMoved, DEPTH, true, TL, TR, BL, BR, ref count);
                     if (val > BestVal)
                     {
                         BestVal = val;

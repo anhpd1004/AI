@@ -12,7 +12,7 @@ namespace AIBigExercise.Controller
     {
         //Max player is Computer
         //depth la do sau
-        public long Albe(ref Cell[,] GameBoard, ref Stack<Cell> StackMoved, int depth, bool IsMax, ref long alpha, ref long beta, Position TL, Position TR, Position BL, Position BR)
+        public long Albe(ref Cell[,] GameBoard, ref Stack<Cell> StackMoved, int depth, bool IsMax, ref long alpha, ref long beta, Position TL, Position TR, Position BL, Position BR, ref int count)
         {
             if (depth == DEPTH)
             {
@@ -36,10 +36,12 @@ namespace AIBigExercise.Controller
             CaroGame cg = new CaroGame();
             if (cg.TerminalCheck(StackMoved, GameBoard))
             {
+                count++;
                 return Evaluate(GameBoard, Cell.PLAYER2);
             }
             if (depth == 0)
             {
+                count++;
                 return Evaluate(GameBoard, Cell.PLAYER2);
             }
             if (IsMax)
@@ -54,7 +56,7 @@ namespace AIBigExercise.Controller
                     {
                         GameBoard[i, j].Status = Cell.PLAYER2;
                         StackMoved.Push(new Cell(new Position(i, j), new Point(), Cell.PLAYER2));
-                        long value = Albe(ref GameBoard, ref StackMoved, depth - 1, !IsMax, ref alpha, ref beta, TL, TR, BL, BR);
+                        long value = Albe(ref GameBoard, ref StackMoved, depth - 1, !IsMax, ref alpha, ref beta, TL, TR, BL, BR, ref count);
                         GameBoard[i, j].Status = Cell.EMPTY;
                         StackMoved.Pop();
                         bestValue = (value > bestValue) ? value : bestValue;
@@ -77,7 +79,7 @@ namespace AIBigExercise.Controller
                     {
                         GameBoard[i, j].Status = Cell.PLAYER1;
                         StackMoved.Push(new Cell(new Position(i, j), new Point(), Cell.PLAYER1));
-                        long value = Albe(ref GameBoard, ref StackMoved, depth - 1, !IsMax, ref alpha, ref beta, TL, TR, BL, BR);
+                        long value = Albe(ref GameBoard, ref StackMoved, depth - 1, !IsMax, ref alpha, ref beta, TL, TR, BL, BR, ref count);
                         GameBoard[i, j].Status = Cell.EMPTY;
                         StackMoved.Pop();
                         bestValue = (value < bestValue) ? value : bestValue;
@@ -89,7 +91,7 @@ namespace AIBigExercise.Controller
                 return bestValue;
             }
         }
-        public void FindBestMove(ref Cell[,] GameBoard, ref Stack<Cell> StackMoved, Position TL, Position TR, Position BL, Position BR, ref Position result)
+        public void FindBestMove(ref Cell[,] GameBoard, ref Stack<Cell> StackMoved, Position TL, Position TR, Position BL, Position BR, ref Position result, ref int count)
         {
             long alpha = -1000000000000;
             long beta = 1000000000000;
@@ -115,7 +117,7 @@ namespace AIBigExercise.Controller
             {
                 int i = list[x].Row;
                 int j = list[x].Col;
-                long v = Albe(ref GameBoard, ref StackMoved, DEPTH + 2, true, ref alpha, ref beta, TL, TR, BL, BR);
+                long v = Albe(ref GameBoard, ref StackMoved, DEPTH + 2, true, ref alpha, ref beta, TL, TR, BL, BR, ref count);
                 if (v > bestVal)
                 {
                     bestVal = v;

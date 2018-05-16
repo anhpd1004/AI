@@ -384,25 +384,25 @@ namespace AIBigExercise.Controller
             }
             else
             {
-                //Position p = new Position();
-                //long start = CurrentTimeMillis();
-                //minimax.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
-                //long end = CurrentTimeMillis();
-                //long time = end - start;
-                //File.AppendAllText("minimax.txt", time + "\n");
-                //start = CurrentTimeMillis();
-                //albe.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
-                //end = CurrentTimeMillis();
-                //time = end - start;
-                //File.AppendAllText("alphabeta.txt", time + "\n");
-                //Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
                 Position p = new Position();
                 long start = CurrentTimeMillis();
-                albe.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
+                minimax.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
                 long end = CurrentTimeMillis();
                 long time = end - start;
+                File.AppendAllText("minimax.txt", time + "\n");
+                start = CurrentTimeMillis();
+                albe.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
+                end = CurrentTimeMillis();
+                time = end - start;
                 File.AppendAllText("alphabeta.txt", time + "\n");
                 Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
+                //Position p = new Position();
+                //long start = CurrentTimeMillis();
+                //albe.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
+                //long end = CurrentTimeMillis();
+                //long time = end - start;
+                //File.AppendAllText("alphabeta.txt", time + "\n");
+                //Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
             }
         }
         #endregion

@@ -91,7 +91,6 @@ namespace AIBigExercise.Controller
         }
         public void FindBestMove(ref Cell[,] GameBoard, ref Stack<Cell> StackMoved, Position TL, Position TR, Position BL, Position BR, ref Position result)
         {
-            Cell cell = new Cell();
             long alpha = -1000000000000;
             long beta = 1000000000000;
             long bestVal = -1000000000000;

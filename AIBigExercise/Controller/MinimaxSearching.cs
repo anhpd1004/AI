@@ -94,7 +94,6 @@ namespace AIBigExercise.Controller
         }
         public void FindBestMove(ref Cell[,] GameBoard, ref Stack<Cell> StackMoved, Position TL, Position TR, Position BL, Position BR, ref Position result)
         {
-            Cell cell = new Cell();
             long BestVal = -1000000000000;
             if (TL.Row - 2 >= 0)
                 TL.Row -= 2;
@@ -119,11 +118,7 @@ namespace AIBigExercise.Controller
                 int j = list[x].Col;
                 if (GameBoard[i, j].Status == Cell.EMPTY)
                 {
-                    GameBoard[i, j].Status = Cell.PLAYER2;
-                    StackMoved.Push(new Cell(new Position(i, j), new Point(), Cell.PLAYER2));
-                    long val = MiniMax(ref GameBoard, ref StackMoved, DEPTH - 1, false, TL, TR, BL, BR);
-                    GameBoard[i, j].Status = Cell.EMPTY;
-                    StackMoved.Pop();
+                    long val = MiniMax(ref GameBoard, ref StackMoved, DEPTH, true, TL, TR, BL, BR);
                     if (val > BestVal)
                     {
                         BestVal = val;

@@ -39,16 +39,23 @@ namespace AIBigExercise
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            labelChuChay.Text = "Xin chào tất cả các bạn, chúng\nmình là nhóm 6.\n" +
-                                "Xin chào tất cả các bạn, chúng\nmình là nhóm 6.\n" +
-                                "Xin chào tất cả các bạn, chúng\nmình là nhóm 6.\n";
+            labelChuChay.Text = "Game Caro - Nhóm 6\n" +
+                                "\t-Phạm Duy Anh\n" +
+                                "\t-Trịnh Trường Giang\n" + 
+                                "\t-Nguyễn Đăng Hào\n" +
+                                "\t-Trần Quý Ngọc\n\n" +
+                                "Game Caro - Nhóm 6\n" +
+                                "\t-Phạm Duy Anh\n" +
+                                "\t-Trịnh Trường Giang\n" + 
+                                "\t-Nguyễn Đăng Hào\n" +
+                                "\t-Trần Quý Ngọc\n";
+
             timerChuChay.Enabled = true;
             picUndo.Enabled = false;
             picRedo.Enabled = false;
             btnNewGame.Enabled = true;
             btnPlayerVsComputer.Enabled = false;
             btnPlayerVsPlayer.Enabled = false;
-            picBay.Visible = false;
         }
         private void CallTimerTick()
         {
@@ -65,14 +72,6 @@ namespace AIBigExercise
             else
             {
                 labelChuChay.Location = new Point(x, labelChuChay.Location.Y - 1);
-            }
-            int xx = picBay.Location.X;
-            int yy = picBay.Location.Y;
-            if (picBay.Visible)
-            {
-                xx = (xx <= panelBoard.Width - 20) ? (xx + 1) : xx;
-                yy = (yy >= 15) ? (yy - 1) : yy;
-                picBay.Location = new Point(xx, yy);
             }
         }
 
@@ -92,11 +91,6 @@ namespace AIBigExercise
             bool move = CaroGame.Move(x, y, CaroGame.CellArray[y/Cell.SIZE,x/Cell.SIZE].Status, g);
             if (!move)
                 return;
-            MinimaxSearching minimax = new MinimaxSearching();
-            long start = CaroGame.CurrentTimeMillis();
-            long xxxx = minimax.Evaluate(CaroGame.CellArray, Cell.PLAYER2);
-            long end = CaroGame.CurrentTimeMillis();
-            MessageBox.Show(xxxx + " - " + (end - start));
             picUndo.Enabled = true;
             if (CaroGame.TerminalCheck(CaroGame.StackMoved, CaroGame.CellArray))
             {
@@ -107,11 +101,7 @@ namespace AIBigExercise
             }
             else if (CaroGame.Mode == CaroGame.PLAYER_VS_COM)
             {
-                CaroGame.ComMoveByMinimax(g);
-                start = CaroGame.CurrentTimeMillis();
-                xxxx = minimax.Evaluate(CaroGame.CellArray, Cell.PLAYER2);
-                end = CaroGame.CurrentTimeMillis();
-                MessageBox.Show(xxxx + " - " + (end - start));
+                CaroGame.ComMoveByAlbe(g);
                 if (CaroGame.TerminalCheck(CaroGame.StackMoved, CaroGame.CellArray))
                 {
                     CaroGame.TerminalGame();
@@ -246,11 +236,6 @@ namespace AIBigExercise
             btnPlayerVsComputer.Enabled = true;
             btnPlayerVsPlayer.Enabled = true;
             btnNewGame.Enabled = false;
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            picBay.Visible = true;
         }
     }
 }

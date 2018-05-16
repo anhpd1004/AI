@@ -71,7 +71,7 @@ namespace AIBigExercise.Controller
             if (col < BL.Col)
                 BL.Col = col;
         }
-        private void BottomRight(ref Position BR,int row, int col)
+        private void BottomRight(ref Position BR, int row, int col)
         {
             if (row > BR.Row)
                 BR.Row = row;
@@ -102,11 +102,15 @@ namespace AIBigExercise.Controller
                 Cell c = StackMoved.ElementAt(i);
                 int row = c.Pos.Row;
                 int col = c.Pos.Col;
-                for(int x = row - 1; x < row+2; x++) {
-                    for(int y = col - 1; y < col + 2; y++) {
-                        if(0 <= x && x < n && 0 <= y && y < n) {
-                            if(!VisitedCell[x,y]) {
-                                StackAbilities.Push(new Position(x,y));
+                for (int x = row - 1; x < row + 2; x++)
+                {
+                    for (int y = col - 1; y < col + 2; y++)
+                    {
+                        if (0 <= x && x < n && 0 <= y && y < n)
+                        {
+                            if (!VisitedCell[x, y])
+                            {
+                                StackAbilities.Push(new Position(x, y));
                                 VisitedCell[x, y] = true;
                             }
                         }
@@ -123,35 +127,51 @@ namespace AIBigExercise.Controller
             List<Position> movingList = new List<Position>();
             //sap xep giam dan theo value
             //movings.OrderByDescendin();
-            long l = Evaluate(GameBoard, Cell.PLAYER2);
-            if (l >= 0)
+            while (StackAbilities.Count > 0)
             {
-                while (StackAbilities.Count > 0)
-                {
-                    Position p = StackAbilities.Pop();
-                    int i = p.Row;
-                    int j = p.Col;
-                    GameBoard[i, j].Status = Cell.PLAYER2;
-                    long value = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
-                    GameBoard[i, j].Status = Cell.EMPTY;
-                    movings.Add(new Position(i, j), value);
-                }
+                Position p = StackAbilities.Pop();
+                int i = p.Row;
+                int j = p.Col;
+                GameBoard[i, j].Status = CellState;
+                long x = Evaluate(GameBoard, Cell.PLAYER2);
+                long value = CellState == Cell.PLAYER2 ? x : -x;
+                //if (value < 0)
+                //{
+                //    GameBoard[i, j].Status = Cell.PLAYER1;
+                //    value = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
+                //}
+                GameBoard[i, j].Status = Cell.EMPTY;
+                movings.Add(new Position(i, j), value);
             }
-            else
-            {
-                while (StackAbilities.Count > 0)
-                {
-                    Position p = StackAbilities.Pop();
-                    int i = p.Row;
-                    int j = p.Col;
-                    GameBoard[i, j].Status = Cell.PLAYER2;
-                    long valueMax = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
-                    GameBoard[i, j].Status = Cell.PLAYER1;
-                    long valueMin = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
-                    GameBoard[i, j].Status = Cell.EMPTY;
-                    movings.Add(new Position(i, j), (valueMax > valueMin ? valueMax : valueMin));
-                }
-            }
+            //long l = Evaluate(GameBoard, CellState);
+            //if (l >= 0)
+            //{
+            //    while (StackAbilities.Count > 0)
+            //    {
+            //        Position p = StackAbilities.Pop();
+            //        int i = p.Row;
+            //        int j = p.Col;
+            //        GameBoard[i, j].Status = CellState;
+            //        long value = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
+            //        GameBoard[i, j].Status = Cell.EMPTY;
+            //        movings.Add(new Position(i, j), value);
+            //    }
+            //}
+            //else
+            //{
+            //    while (StackAbilities.Count > 0)
+            //    {
+            //        Position p = StackAbilities.Pop();
+            //        int i = p.Row;
+            //        int j = p.Col;
+            //        GameBoard[i, j].Status = Cell.PLAYER2;
+            //        long valueMax = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
+            //        GameBoard[i, j].Status = Cell.PLAYER1;
+            //        long valueMin = Math.Abs(Evaluate(GameBoard, Cell.PLAYER2));
+            //        GameBoard[i, j].Status = Cell.EMPTY;
+            //        movings.Add(new Position(i, j), (valueMax > valueMin ? valueMax : valueMin));
+            //    }
+            //}
             //for (int i = TL.Row; i <= BL.Row; i++)
             //{
             //    for (int j = TL.Col; j <= TR.Col; j++)
@@ -184,17 +204,20 @@ namespace AIBigExercise.Controller
             {
                 movingList.Add(p);
                 dem++;
-                if (dem >= 3)
+                if (dem >= 4)
                 {
                     break;
                 }
             }
             return movingList;
         }
-        public virtual long AttackGradeInRow(int CurrRow, int CurrCol)
+        public virtual void GenMoves1()
         {
-            long TongDiem = 0;
-            int SoQuanTa = 0, SoQuanDich = 0;
+
+        }
+        public virtual long GradeInRow(Cell[,] GameBoard)
+        {
+
             return 0;
         }
         public virtual String BoardToString(Cell[,] GameBoard)
@@ -267,7 +290,8 @@ namespace AIBigExercise.Controller
             }
             return s;
         }
-        public virtual String LineToString(Cell[,] GameBoard, Position currPos) {
+        public virtual String LineToString(Cell[,] GameBoard, Position currPos)
+        {
             String s = "";
             int row = currPos.Row;
             int col = currPos.Col;
@@ -284,45 +308,45 @@ namespace AIBigExercise.Controller
                 regex2 = new Regex(OCase[i], RegexOptions.IgnoreCase);
                 if (CellState == Cell.PLAYER2)
                 {
-                    //if (i == 0 || i == 6)
-                    //{
-                    //    if (regex2.Match(s) != null)
-                    //    {
-                    //        grades += point[i];
-                    //    }
-                    //    if (regex1.Match(s) != null)
-                    //    {
-                    //        grades -= point[i];
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    grades += point[i] * regex2.Matches(s).Count;
-                    //    grades -= point[i] * regex1.Matches(s).Count;
-                    //}
-                    grades += point[i] * regex2.Matches(s).Count;
-                    grades -= point[i] * regex1.Matches(s).Count;
+                    if (i == 6)
+                    {
+                        if (regex2.Matches(s).Count > 0)
+                        {
+                            grades += point[i];
+                        }
+                        if (regex1.Matches(s).Count > 0)
+                        {
+                            grades -= point[i];
+                        }
+                    }
+                    else
+                    {
+                        grades += point[i] * regex2.Matches(s).Count;
+                        grades -= point[i] * regex1.Matches(s).Count;
+                    }
+                    //grades += point[i] * regex2.Matches(s).Count;
+                    //grades -= point[i] * regex1.Matches(s).Count;
                 }
                 else
                 {
-                    //if (i == 0 || i == 6)
-                    //{
-                    //    if (regex2.Match(s) != null)
-                    //    {
-                    //        grades -= point[i];
-                    //    }
-                    //    if (regex1.Match(s) != null)
-                    //    {
-                    //        grades += point[i];
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    grades -= point[i] * regex2.Matches(s).Count;
-                    //    grades += point[i] * regex1.Matches(s).Count;
-                    //}
-                    grades -= point[i] * regex2.Matches(s).Count;
-                    grades += point[i] * regex1.Matches(s).Count;
+                    if (i == 6)
+                    {
+                        if (regex2.Match(s) != null)
+                        {
+                            grades -= point[i];
+                        }
+                        if (regex1.Match(s) != null)
+                        {
+                            grades += point[i];
+                        }
+                    }
+                    else
+                    {
+                        grades -= point[i] * regex2.Matches(s).Count;
+                        grades += point[i] * regex1.Matches(s).Count;
+                    }
+                    //grades -= point[i] * regex2.Matches(s).Count;
+                    //grades += point[i] * regex1.Matches(s).Count;
                 }
             }
             return grades;

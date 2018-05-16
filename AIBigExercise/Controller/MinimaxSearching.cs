@@ -36,6 +36,11 @@ namespace AIBigExercise.Controller
                 if (BR.Col + 2 <= n - 1)
                     BR.Col += 2;
             }
+            CaroGame cg = new CaroGame();
+            if (cg.TerminalCheck(StackMoved, GameBoard))
+            {
+                return Evaluate(GameBoard, Cell.PLAYER2);
+            }
             if (depth == 0)
             {
                 return Evaluate(GameBoard, Cell.PLAYER2);
@@ -44,7 +49,6 @@ namespace AIBigExercise.Controller
             {
                 long best = -1000000000000;
                 List<Position> list = GenMoves(GameBoard, Cell.PLAYER2, StackMoved);
-                CaroGame cg = new CaroGame();
                 for (int x = 0; x < list.Count; x++)
                 {
                     int i = list[x].Row;
@@ -53,12 +57,6 @@ namespace AIBigExercise.Controller
                     {
                         GameBoard[i, j].Status = Cell.PLAYER2;
                         StackMoved.Push(new Cell(new Position(i, j), new Point(), Cell.PLAYER2));
-                        if (cg.TerminalCheck(StackMoved, GameBoard))
-                        {
-                            GameBoard[i, j].Status = Cell.EMPTY;
-                            StackMoved.Pop();
-                            return Evaluate(GameBoard, Cell.PLAYER2);
-                        }
                         long v = MiniMax(ref GameBoard, ref StackMoved, depth - 1, !IsMax, TL, TR, BL, BR);
                         GameBoard[i, j].Status = Cell.EMPTY;
                         StackMoved.Pop();
@@ -74,7 +72,6 @@ namespace AIBigExercise.Controller
             {
                 long best = 1000000000000;
                 List<Position> list = GenMoves(GameBoard, Cell.PLAYER1, StackMoved);
-                CaroGame cg = new CaroGame();
                 for (int x = 0; x < list.Count; x++)
                 {
                     int i = list[x].Row;
@@ -83,12 +80,6 @@ namespace AIBigExercise.Controller
                     {
                         GameBoard[i, j].Status = Cell.PLAYER1;
                         StackMoved.Push(new Cell(new Position(i, j), new Point(), Cell.PLAYER1));
-                        if (cg.TerminalCheck(StackMoved, GameBoard))
-                        {
-                            GameBoard[i, j].Status = Cell.EMPTY;
-                            StackMoved.Pop();
-                            return Evaluate(GameBoard, Cell.PLAYER2);
-                        }
                         long v = MiniMax(ref GameBoard, ref StackMoved, depth - 1, !IsMax, TL, TR, BL, BR);
                         GameBoard[i, j].Status = Cell.EMPTY;
                         StackMoved.Pop();

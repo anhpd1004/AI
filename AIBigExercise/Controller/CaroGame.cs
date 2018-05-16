@@ -33,8 +33,7 @@ namespace AIBigExercise.Controller
         private int _Result;//kết quả của trận đấu
         private byte _Mode;//chế độ chơi
         private MinimaxSearching minimax;
-        //private AlphaBetaSearching albe;
-        private StreamWriter swmini;
+        private AlphaBetaSearching albe;
         private bool[,] _VisitedCell;
         //StreamWriter swalbe = File.CreateText(@"AlphaBeta.txt");
         
@@ -47,7 +46,7 @@ namespace AIBigExercise.Controller
             _StackMoved = new Stack<Cell>();
             _StackUndo = new Stack<Cell>();
             minimax = new MinimaxSearching();
-            //albe = new AlphaBetaSearching();
+            albe = new AlphaBetaSearching();
             _VisitedCell = new bool[SIZE, SIZE];
             InitialCellArray();
         }
@@ -208,7 +207,6 @@ namespace AIBigExercise.Controller
         }
         public void StartPlayerVsCom(Graphics g)
         {
-            swmini = File.CreateText("Minimax.txt");
             this._IsReady = true;
             _Move = 3;
             this._Mode = CaroGame.PLAYER_VS_COM;
@@ -216,7 +214,7 @@ namespace AIBigExercise.Controller
             _StackUndo = new Stack<Cell>();
             InitialCellArray();
             _GameBoard.PaintBoard(g);
-            ComMoveByMinimax(g);
+            ComMoveByAlbe(g);
         }
         #region Undo Redo
         public void Undo(Graphics g)
@@ -246,7 +244,6 @@ namespace AIBigExercise.Controller
         //kết thúc trò chơi
         public void TerminalGame()
         {
-            swmini.Close();
             String winner = (_Result == Board.DRAW) ? "Draw game" 
                 : (_Result == Board.PLAYER1_WIN ? "Player 1 win" 
                 :(_Result == Board.PLAYER2_WIN ? "Player 2 win" : "Computer win"));
@@ -375,27 +372,39 @@ namespace AIBigExercise.Controller
                 minimax.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
                 long end = CurrentTimeMillis();
                 long time = end - start;
-                swmini.WriteLine(time);
+                File.AppendAllText("minimax.txt", time + "\n");
                 Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
             }
         }
-        //public void ComMoveByAlBe(Graphics g)
-        //{
-        //    if (_StackMoved.Count == 0)
-        //    {
-        //        Move((SIZE - 1) / 2 * Cell.SIZE + 1, (SIZE - 1) / 2 * Cell.SIZE + 1, Cell.EMPTY, g);
-        //    }
-        //    else
-        //    {
-        //        long start = CurrentTimeMillis();
-        //        Position p = new Position();
-        //        albe.FindBestMove(ref _CellArray, TL, TR, BL, BR, ref p);
-        //        long end = CurrentTimeMillis();
-        //        long time = end - start;
-        //        //System.IO.File.WriteAllText(@"Runtimes\AlphaBeta.txt", time + "\n");
-        //        Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
-        //    }
-        //}
+        public void ComMoveByAlbe(Graphics g)
+        {
+            if (_StackMoved.Count == 0)
+            {
+                Move((SIZE - 1) / 2 * Cell.SIZE + 1, (SIZE - 1) / 2 * Cell.SIZE + 1, Cell.EMPTY, g);
+            }
+            else
+            {
+                //Position p = new Position();
+                //long start = CurrentTimeMillis();
+                //minimax.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
+                //long end = CurrentTimeMillis();
+                //long time = end - start;
+                //File.AppendAllText("minimax.txt", time + "\n");
+                //start = CurrentTimeMillis();
+                //albe.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
+                //end = CurrentTimeMillis();
+                //time = end - start;
+                //File.AppendAllText("alphabeta.txt", time + "\n");
+                //Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
+                Position p = new Position();
+                long start = CurrentTimeMillis();
+                albe.FindBestMove(ref _CellArray, ref _StackMoved, TL, TR, BL, BR, ref p);
+                long end = CurrentTimeMillis();
+                long time = end - start;
+                File.AppendAllText("alphabeta.txt", time + "\n");
+                Move(p.Col * Cell.SIZE + 1, p.Row * Cell.SIZE + 1, Cell.EMPTY, g);
+            }
+        }
         #endregion
     }
 }
